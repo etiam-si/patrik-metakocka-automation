@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cron Scheduler UI</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  .grid-item {
+    cursor: pointer;
+    user-select: none;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    text-align: center;
+    padding: 0.5rem;
+    transition: background 0.2s;
+    flex: 1;
+  }
+  .grid-item.selected {
+    background-color: #3b82f6;
+    color: white;
+    border-color: #2563eb;
+  }
+  .grid-item:hover {
+    background-color: #bfdbfe;
+  }
+  #logo {
+    max-height: 60px;
+    object-fit: contain;
+    margin-bottom: 1rem;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+</style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+  <div class="bg-white shadow-xl rounded-lg p-6 w-full max-w-3xl text-center">
+    
+    <!-- Centered Hardcoded Company Logo -->
+    <img id="logo" src="https://imgs.pnvnet.si/img/615/301/75/2/c/www.patrikinternational.com/assets/page_info/0308183001671536508.png" alt="Company Logo">
+
+    <h2 class="text-2xl font-bold mb-6">Warehouse Stock Sync Scheduler</h2>
+
+    <!-- Minutes -->
+    <div class="mb-6">
+      <label class="block font-medium mb-2">Minutes:</label>
+      <div class="flex gap-2 w-full">
+        <div class="grid-item minute" data-value="0">0</div>
+        <div class="grid-item minute" data-value="15">15</div>
+        <div class="grid-item minute" data-value="30">30</div>
+        <div class="grid-item minute" data-value="45">45</div>
+      </div>
+    </div>
+
+    <!-- Hours -->
+    <div class="mb-6">
+      <label class="block font-medium mb-2">Hours:</label>
+      <div class="grid grid-cols-6 gap-2">
+        <div class="grid-item hour" data-value="0">0</div>
+        <div class="grid-item hour" data-value="1">1</div>
+        <div class="grid-item hour" data-value="2">2</div>
+        <div class="grid-item hour" data-value="3">3</div>
+        <div class="grid-item hour" data-value="4">4</div>
+        <div class="grid-item hour" data-value="5">5</div>
+        <div class="grid-item hour" data-value="6">6</div>
+        <div class="grid-item hour" data-value="7">7</div>
+        <div class="grid-item hour" data-value="8">8</div>
+        <div class="grid-item hour" data-value="9">9</div>
+        <div class="grid-item hour" data-value="10">10</div>
+        <div class="grid-item hour" data-value="11">11</div>
+        <div class="grid-item hour" data-value="12">12</div>
+        <div class="grid-item hour" data-value="13">13</div>
+        <div class="grid-item hour" data-value="14">14</div>
+        <div class="grid-item hour" data-value="15">15</div>
+        <div class="grid-item hour" data-value="16">16</div>
+        <div class="grid-item hour" data-value="17">17</div>
+        <div class="grid-item hour" data-value="18">18</div>
+        <div class="grid-item hour" data-value="19">19</div>
+        <div class="grid-item hour" data-value="20">20</div>
+        <div class="grid-item hour" data-value="21">21</div>
+        <div class="grid-item hour" data-value="22">22</div>
+        <div class="grid-item hour" data-value="23">23</div>
+      </div>
+    </div>
+
+    <!-- Days -->
+    <div class="mb-6">
+      <label class="block font-medium mb-2">Days of Week:</label>
+      <div class="grid grid-cols-7 gap-2">
+          <div class="grid-item day" data-value="1">Mon</div>
+          <div class="grid-item day" data-value="2">Tue</div>
+          <div class="grid-item day" data-value="3">Wed</div>
+          <div class="grid-item day" data-value="4">Thu</div>
+          <div class="grid-item day" data-value="5">Fri</div>
+          <div class="grid-item day" data-value="6">Sat</div>
+          <div class="grid-item day" data-value="0">Sun</div>
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="flex gap-2 mb-4">
+      <button id="generateCron" class="flex-1 bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 transition">Generate Cron</button>
+      <button id="clearAll" class="flex-1 bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded hover:bg-gray-400 transition">Clear All</button>
+    </div>
+
+    <h3 class="mt-2 text-lg font-semibold">Cron Expression:</h3>
+    <pre id="cronOutput" class="bg-gray-100 p-3 rounded mt-2 text-gray-700 font-mono">*</pre>
+  </div>
+
+  <script>
+    function setupShiftSelection(className) {
+      let lastSelectedIndex = null;
+      const items = Array.from(document.querySelectorAll(`.${className}`));
+      items.forEach((item, index) => {
+        item.addEventListener('click', (e) => {
+          if(e.shiftKey && lastSelectedIndex !== null) {
+            const start = Math.min(lastSelectedIndex, index);
+            const end = Math.max(lastSelectedIndex, index);
+            for(let i=start; i<=end; i++) items[i].classList.add('selected');
+          } else {
+            item.classList.toggle('selected');
+            lastSelectedIndex = index;
+          }
+        });
+      });
+    }
+
+    ['minute','hour','day'].forEach(cls => setupShiftSelection(cls));
+
+    function getSelectedValues(className) {
+      const selected = Array.from(document.querySelectorAll(`.${className}.selected`)).map(el => el.dataset.value);
+      return selected.length === 0 ? '*' : selected.join(',');
+    }
+
+    document.getElementById('generateCron').addEventListener('click', () => {
+      const minutes = getSelectedValues('minute');
+      const hours = getSelectedValues('hour');
+      const days = getSelectedValues('day');
+      const cron = `${minutes} ${hours} * * ${days}`;
+      document.getElementById('cronOutput').textContent = cron;
+    });
+
+    document.getElementById('clearAll').addEventListener('click', () => {
+      document.querySelectorAll('.grid-item.selected').forEach(el => el.classList.remove('selected'));
+      document.getElementById('cronOutput').textContent = '*';
+    });
+
+    // Function to load cron expression and select corresponding options
+    function loadCronExpression(cron) {
+      const parts = cron.trim().split(' ');
+      if(parts.length < 5) return;
+
+      const [minPart, hourPart, , , dayPart] = parts;
+
+      const selectItems = (className, values) => {
+        const items = document.querySelectorAll(`.${className}`);
+        items.forEach(item => {
+          const val = item.dataset.value;
+          if(values === '*') {
+            item.classList.remove('selected');
+          } else {
+            const vals = values.split(',');
+            item.classList.toggle('selected', vals.includes(val));
+          }
+        });
+      }
+
+      selectItems('minute', minPart);
+      selectItems('hour', hourPart);
+      selectItems('day', dayPart);
+
+      document.getElementById('cronOutput').textContent = cron;
+    }
+
+    // Example usage:
+    // loadCronExpression('0,30 4,5,6,7 * * 1,4,6');
+  </script>
+</body>
+</html>
