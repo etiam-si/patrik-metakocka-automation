@@ -19,6 +19,8 @@ const apiLimiter = rateLimit({
 
 app.use(apiLimiter)
 
+app.use(express.static("public"));
+
 // Set your API key (in production, use env variables)
 const API_KEY = process.env.API_KEY;
 
