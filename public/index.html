@@ -256,7 +256,7 @@
     // Load runs on page load
     fetchLatestRuns();
 
-    const API_ENDPOINT = "http://localhost:3000"; // or your real backend
+    const API_ENDPOINT = window.location.origin;
 
     // Update Schedule
     document.getElementById('generateCron').addEventListener('click', async () => {
