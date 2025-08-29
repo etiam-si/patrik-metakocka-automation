@@ -16,6 +16,7 @@ COPY public ./public
 
 # Copy your main server file (index.js)
 COPY index.js .
+COPY cron.js .
 
 # Expose the port
 EXPOSE 3000
