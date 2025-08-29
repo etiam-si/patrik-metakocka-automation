@@ -4,6 +4,9 @@ FROM node:alpine
 # Set working directory
 WORKDIR /usr/src/app
 
+ENV ENV_FILE_PATH=/data/.env
+ENV CRON_FILE_PATH=/data/cron.json
+
 # Copy package files and install dependencies
 COPY package*.json ./
 RUN npm install --production

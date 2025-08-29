@@ -1,50 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cron Scheduler UI</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<style>
-  .grid-item {
-    cursor: pointer;
-    user-select: none;
-    border: 1px solid #d1d5db;
-    border-radius: 0.375rem;
-    text-align: center;
-    padding: 0.5rem;
-    transition: background 0.2s;
-    flex: 1;
-  }
-  .grid-item.selected {
-    background-color: #3b82f6;
-    color: white;
-    border-color: #2563eb;
-  }
-  .grid-item:hover {
-    background-color: #bfdbfe;
-  }
-  #logo {
-    max-height: 60px;
-    object-fit: contain;
-    margin-bottom: 1rem;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patrik Warahouse Sync</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .grid-item {
+      cursor: pointer;
+      user-select: none;
+      border: 1px solid #d1d5db;
+      border-radius: 0.375rem;
+      text-align: center;
+      padding: 0.5rem;
+      transition: background 0.2s;
+      flex: 1;
+    }
+
+    .grid-item.selected {
+      background-color: #3b82f6;
+      color: white;
+      border-color: #2563eb;
+    }
+
+    .grid-item:hover {
+      background-color: #bfdbfe;
+    }
+
+    #logo {
+      max-height: 60px;
+      object-fit: contain;
+      margin-bottom: 1rem;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  </style>
 </head>
+
 <body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
   <div class="bg-white shadow-xl rounded-lg p-6 w-full max-w-3xl text-center">
-    
-    <!-- Centered Hardcoded Company Logo -->
-    <img id="logo" src="https://imgs.pnvnet.si/img/615/301/75/2/c/www.patrikinternational.com/assets/page_info/0308183001671536508.png" alt="Company Logo">
+
+    <!-- Centered Company Logo -->
+    <img id="logo"
+      src="https://imgs.pnvnet.si/img/615/301/75/2/c/www.patrikinternational.com/assets/page_info/0308183001671536508.png"
+      alt="Company Logo">
 
     <h2 class="text-2xl font-bold mb-6">Warehouse Stock Sync Scheduler</h2>
 
     <!-- Minutes -->
     <div class="mb-6">
-      <label class="block font-medium mb-2">Minutes:</label>
+      <label class="block font-medium mb-2">On minutes:</label>
+      <p class="mb-2">If none is selected it will run at full hour.</p>
       <div class="flex gap-2 w-full">
         <div class="grid-item minute" data-value="0">0</div>
         <div class="grid-item minute" data-value="15">15</div>
@@ -55,7 +63,8 @@
 
     <!-- Hours -->
     <div class="mb-6">
-      <label class="block font-medium mb-2">Hours:</label>
+      <label class="block font-medium mb-2">At hours:</label>
+      <p class="mb-2">If none is selected it will run every hour.</p>
       <div class="grid grid-cols-6 gap-2">
         <div class="grid-item hour" data-value="0">0</div>
         <div class="grid-item hour" data-value="1">1</div>
@@ -86,78 +95,121 @@
 
     <!-- Days -->
     <div class="mb-6">
-      <label class="block font-medium mb-2">Days of Week:</label>
+      <label class="block font-medium mb-2">Which days of the week:</label>
+      <p class="mb-2">If none is selected it will run every day of the week.</p>
       <div class="grid grid-cols-7 gap-2">
-          <div class="grid-item day" data-value="1">Mon</div>
-          <div class="grid-item day" data-value="2">Tue</div>
-          <div class="grid-item day" data-value="3">Wed</div>
-          <div class="grid-item day" data-value="4">Thu</div>
-          <div class="grid-item day" data-value="5">Fri</div>
-          <div class="grid-item day" data-value="6">Sat</div>
-          <div class="grid-item day" data-value="0">Sun</div>
+        <div class="grid-item day" data-value="1">Mon</div>
+        <div class="grid-item day" data-value="2">Tue</div>
+        <div class="grid-item day" data-value="3">Wed</div>
+        <div class="grid-item day" data-value="4">Thu</div>
+        <div class="grid-item day" data-value="5">Fri</div>
+        <div class="grid-item day" data-value="6">Sat</div>
+        <div class="grid-item day" data-value="0">Sun</div>
       </div>
+    </div>
+
+    <!-- API Key Input -->
+    <div class="mb-4 flex items-center gap-2 justify-center">
+      <label for="apiKey" class="font-medium">API Key:</label>
+      <input id="apiKey" type="text" placeholder="Enter API key"
+        class="border border-gray-300 rounded px-2 py-1 w-64 focus:outline-none focus:ring-2 focus:ring-blue-400">
     </div>
 
     <!-- Buttons -->
     <div class="flex gap-2 mb-4">
-      <button id="generateCron" class="flex-1 bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 transition">Generate Cron</button>
-      <button id="clearAll" class="flex-1 bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded hover:bg-gray-400 transition">Clear All</button>
+      <button id="generateCron"
+        class="flex-1 bg-green-500 text-white font-bold py-2 px-4 rounded hover:bg-green-600 transition">
+        Update Schedule
+      </button>
+      <button id="clearAll"
+        class="flex-1 bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded hover:bg-gray-400 transition">
+        Clear All
+      </button>
+      <button id="runNow"
+        class="flex-1 bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 transition">
+        Run Now
+      </button>
     </div>
+
 
     <h3 class="mt-2 text-lg font-semibold">Cron Expression:</h3>
     <pre id="cronOutput" class="bg-gray-100 p-3 rounded mt-2 text-gray-700 font-mono">*</pre>
+
+    <!-- Latest 10 Runs Section -->
+    <h3 class="mt-6 text-lg font-semibold">Job Scheduler Log</h3>
+    <div class="overflow-x-auto mt-2">
+      <table class="min-w-full bg-white border border-gray-200 rounded-lg" id="runsTable">
+        <thead>
+          <tr class="bg-gray-100 border-b">
+            <th class="py-2 px-4 text-left text-gray-700 font-semibold">Timestamp</th>
+            <th class="py-2 px-4 text-left text-gray-700 font-semibold">Stock Link</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Dynamic rows will appear here -->
+        </tbody>
+      </table>
+    </div>
+
   </div>
 
   <script>
+    const GOOGLE_LOG_API_ENDPOINT = "https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLidNT74OxDWA9UlPo6B6yDuVrIletndfAfUSPeYCtztw89NAN7iTvLlxa3M57A0_w-m50nq9kDwohnyD91zQg22sbqsNW499aRRNtbc8HXIwNj4zaky_8YniO0coqTvK-RrwMsgf1aqo1RqbLATAP5sn6kE0dKwvjx-vpkrlIOZMGBvFwvJyv1E46EJM-13hfDaR8nBvHQyvDV_k2uY0l0Nzv_1rjImPENP-dylGX5kcOXfRDPY9wzWCjIuUDGEs-kk37ep_QX9f2zubylehl5dpH6aF1FwmgYvYeqU&lib=MnbOYwUe1JN0k7lD_zVZ-zx35sBmY8eFZ";
+
+    // Grid selection setup
     function setupShiftSelection(className) {
       let lastSelectedIndex = null;
       const items = Array.from(document.querySelectorAll(`.${className}`));
       items.forEach((item, index) => {
         item.addEventListener('click', (e) => {
-          if(e.shiftKey && lastSelectedIndex !== null) {
+          if (e.shiftKey && lastSelectedIndex !== null) {
             const start = Math.min(lastSelectedIndex, index);
             const end = Math.max(lastSelectedIndex, index);
-            for(let i=start; i<=end; i++) items[i].classList.add('selected');
+            for (let i = start; i <= end; i++) items[i].classList.add('selected');
           } else {
             item.classList.toggle('selected');
             lastSelectedIndex = index;
           }
+          generateCron(); // <-- update cron automatically
         });
       });
     }
 
-    ['minute','hour','day'].forEach(cls => setupShiftSelection(cls));
+    ['minute', 'hour', 'day'].forEach(cls => setupShiftSelection(cls));
 
-    function getSelectedValues(className) {
+    function getSelectedValues(className, defaultValue = '*') {
       const selected = Array.from(document.querySelectorAll(`.${className}.selected`)).map(el => el.dataset.value);
-      return selected.length === 0 ? '*' : selected.join(',');
+      if (className === 'minute') {
+        return selected.length === 0 ? '0' : selected.join(',');
+      }
+      return selected.length === 0 ? defaultValue : selected.join(',');
     }
 
-    document.getElementById('generateCron').addEventListener('click', () => {
+    function generateCron() {
       const minutes = getSelectedValues('minute');
       const hours = getSelectedValues('hour');
       const days = getSelectedValues('day');
       const cron = `${minutes} ${hours} * * ${days}`;
       document.getElementById('cronOutput').textContent = cron;
-    });
+      return cron;
+    }
 
+    document.getElementById('generateCron').addEventListener('click', generateCron);
     document.getElementById('clearAll').addEventListener('click', () => {
       document.querySelectorAll('.grid-item.selected').forEach(el => el.classList.remove('selected'));
       document.getElementById('cronOutput').textContent = '*';
     });
 
-    // Function to load cron expression and select corresponding options
     function loadCronExpression(cron) {
       const parts = cron.trim().split(' ');
-      if(parts.length < 5) return;
-
+      if (parts.length < 5) return;
       const [minPart, hourPart, , , dayPart] = parts;
 
       const selectItems = (className, values) => {
         const items = document.querySelectorAll(`.${className}`);
         items.forEach(item => {
           const val = item.dataset.value;
-          if(values === '*') {
+          if (values === '*') {
             item.classList.remove('selected');
           } else {
             const vals = values.split(',');
@@ -169,12 +221,125 @@
       selectItems('minute', minPart);
       selectItems('hour', hourPart);
       selectItems('day', dayPart);
-
       document.getElementById('cronOutput').textContent = cron;
     }
 
-    // Example usage:
-    // loadCronExpression('0,30 4,5,6,7 * * 1,4,6');
+    async function fetchLatestRuns() {
+      try {
+        const response = await fetch(GOOGLE_LOG_API_ENDPOINT);
+        const data = await response.json();
+        const tableBody = document.querySelector('#runsTable tbody');
+        tableBody.innerHTML = '';
+
+        const latestRuns = data.slice(-10).reverse(); // get latest 10
+
+        const formatTimestamp = (ts) => {
+          const d = new Date(ts);
+          const pad = (n) => n.toString().padStart(2, '0');
+          return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())} ${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()}`;
+        };
+
+        latestRuns.forEach(run => {
+          const row = document.createElement('tr');
+          row.classList.add('border-b');
+          row.innerHTML = `
+          <td class="py-2 px-4 text-left text-gray-700">${formatTimestamp(run.timestamp)}</td>
+          <td class="py-2 px-4 text-left text-blue-600 underline"><a href="${run.stock_link}" target="_blank">View stock list</a></td>
+        `;
+          tableBody.appendChild(row);
+        });
+      } catch (err) {
+        console.error("Error fetching latest runs:", err);
+      }
+    }
+
+    // Load runs on page load
+    fetchLatestRuns();
+
+    const API_ENDPOINT = "http://localhost:3000"; // or your real backend
+
+    // Update Schedule
+    document.getElementById('generateCron').addEventListener('click', async () => {
+      const cron = generateCron();
+      const apiKey = document.getElementById('apiKey').value.trim();
+
+      if (!apiKey) {
+        alert("Please enter your API key!");
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_ENDPOINT}/api/v1/schedules/warehouse-sync`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": apiKey
+          },
+          body: JSON.stringify({ warehouseSync: cron })
+        });
+
+        if (response.ok) {
+          alert("Schedule updated successfully!");
+        } else {
+          const err = await response.text();
+          alert("Failed to update schedule: " + err);
+        }
+      } catch (error) {
+        console.error(error);
+        alert("Error updating schedule. Check console for details.");
+      }
+    });
+
+    // Run Now
+    document.getElementById('runNow').addEventListener('click', async () => {
+      const apiKey = document.getElementById('apiKey').value.trim();
+
+      if (!apiKey) {
+        alert("Please enter your API key!");
+        return;
+      }
+
+      try {
+        alert("Warehouse sync started! You can close the page!");
+        const response = await fetch(`${API_ENDPOINT}/api/v1/warehouse/sync`, {
+          method: "POST",
+          headers: {
+            "x-api-key": apiKey
+          }
+        });
+
+        if (response.ok) {
+          alert("Warehouse sync completed!");
+          fetchLatestRuns(); // refresh log after run
+        } else {
+          const err = await response.text();
+          alert("Failed to run sync: " + err);
+        }
+      } catch (error) {
+        console.error(error);
+        alert("Error running sync. Check console for details.");
+      }
+    });
+
+    async function loadCurrentCron() {
+      try {
+        const response = await fetch(`${API_ENDPOINT}/api/v1/schedules/warehouse-sync`);
+        if (!response.ok) throw new Error("Failed to fetch cron");
+        const data = await response.json();
+        const currentCron = data.warehouseSync || "* * * * *";
+        loadCronExpression(currentCron); // highlight grid
+      } catch (err) {
+        console.error("Error loading current cron:", err);
+      }
+    }
+
+    // Call on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      loadCurrentCron();
+      fetchLatestRuns(); // existing function to load job log
+    });
+
   </script>
 </body>
+
 </html>
