@@ -1,0 +1,11 @@
+version: "3.9"
+
+services:
+  patrik-api:
+    image: etiamsi/patrik-metakocka-automation-api:latest
+    container_name: patrik-api
+    ports:
+      - "3000:3000"
+    volumes:
+      - /var/storage/patrik:/data
+    restart: unless-stopped
