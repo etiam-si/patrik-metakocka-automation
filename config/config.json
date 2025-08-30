@@ -1,0 +1,13 @@
+{
+    "metakocka": {
+        "baseUrl": "https://main.metakocka.si/rest/eshop",
+        "warehouseStockPath": "/v1/json/warehouse_stock",
+        "syncStockPath": "/sync_stock" 
+    },
+    "googleDrive": {
+        "macros": {
+            "saveLogFile": "https://script.google.com/macros/s/AKfycbxblzzA47ZyLtYbUMkLim9FFdi6_Dq7HEwDe4czE7BtcGHSwP9SwE7wwlgYWZHScjWJNA/exec",
+            "updateSyncList": "https://script.google.com/macros/s/AKfycbycfShj45jBiTJF1Uowj03Fbqf2yfdHSbG9ILu0eaFZdq3PGeqPlLqIetqrd-6hL2syew/exec"
+        }
+    }
+}

@@ -17,5 +17,9 @@
     "express-rate-limit": "^8.0.1",
     "googleapis": "^159.0.0",
     "node-cron": "^4.2.1"
+  },
+  "devDependencies": {
+    "eslint": "^9.34.0",
+    "eslint-plugin-import": "^2.32.0"
   }
 }
