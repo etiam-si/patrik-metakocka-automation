@@ -229,7 +229,7 @@ async function warehouseSync() {
             } catch (err) {
                 console.log("Betterstack heartbeat problem: ", err.message || err);
             }
-        })()
+        })();
 
         // Step 4 & 5: Fire-and-forget Google Drive operations
         // so that warehouse sync endpoint is faster &
