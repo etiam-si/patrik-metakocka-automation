@@ -9,8 +9,5 @@
             "saveLogFile": "https://script.google.com/macros/s/AKfycbxblzzA47ZyLtYbUMkLim9FFdi6_Dq7HEwDe4czE7BtcGHSwP9SwE7wwlgYWZHScjWJNA/exec",
             "updateSyncList": "https://script.google.com/macros/s/AKfycbycfShj45jBiTJF1Uowj03Fbqf2yfdHSbG9ILu0eaFZdq3PGeqPlLqIetqrd-6hL2syew/exec"
         }
-    },
-    "betterStack": {
-        "warehouseSyncHeartbeat": "https://uptime.betterstack.com/api/v1/heartbeat/JxbCeHKYLYuje9ZRuvv9WhyQ"
     }
 }
