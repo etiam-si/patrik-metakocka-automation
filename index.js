@@ -254,7 +254,7 @@ async function warehouseSync() {
             try {
                 console.log("HeartBeat")
                 const heartBeatResponse = await axios.get(
-                    "https://uptime.betterstack.com/api/v1/heartbeat/JxbCeHKYLYuje9ZRuvv9WhyQ"
+                    process.env.BETTER_STACK_WH_SYNC_HEARTBEAT
                 )
             } catch (err) {
                 console.log("Betterstack heartbeat problem: ", err.message || err);
