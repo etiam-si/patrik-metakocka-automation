@@ -252,6 +252,7 @@ async function warehouseSync() {
         // Step 5: Heartbeat for BetterStack
         (async () => {
             try {
+                console.log("HeartBeat")
                 const heartBeatResponse = await axios.get(
                     "https://uptime.betterstack.com/api/v1/heartbeat/JxbCeHKYLYuje9ZRuvv9WhyQ"
                 )
