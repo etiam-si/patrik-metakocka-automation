@@ -23,6 +23,9 @@ dotenv.config({ path: envFilePath });
 const app = express();
 const PORT = 3000;
 
+// Tell Express to trust proxy headers like 'X-Forwarded-For'
+app.set('trust proxy', ["192.168.1.180"]);
+
 // prevent API overload
 const apiLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
