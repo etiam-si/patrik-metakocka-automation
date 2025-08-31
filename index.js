@@ -219,7 +219,19 @@ async function warehouseSync() {
             throw new Error("Error warehouse sync!");
         }
 
-        // Step 3 & 4: Fire-and-forget Google Drive operations
+        // Step 3: Heartbeat for BetterStack
+        (async () => {
+            try {
+                console.log("HeartBeat")
+                const heartBeatResponse = await axios.get(
+                    process.env.BETTER_STACK_WH_SYNC_HEARTBEAT
+                )
+            } catch (err) {
+                console.log("Betterstack heartbeat problem: ", err.message || err);
+            }
+        })()
+
+        // Step 4 & 5: Fire-and-forget Google Drive operations
         // so that warehouse sync endpoint is faster &
         // GDrive is synced in background
         (async () => {
@@ -247,19 +259,6 @@ async function warehouseSync() {
                 console.error("Background Google Drive sync failed:", err.message || err);
             }
         })(); // immediately invoked async function
-
-
-        // Step 5: Heartbeat for BetterStack
-        (async () => {
-            try {
-                console.log("HeartBeat")
-                const heartBeatResponse = await axios.get(
-                    process.env.BETTER_STACK_WH_SYNC_HEARTBEAT
-                )
-            } catch (err) {
-                console.log("Betterstack heartbeat problem: ", err.message || err);
-            }
-        })()
 
         return stockSyncResponse.data;
 
