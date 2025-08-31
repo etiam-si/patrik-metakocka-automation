@@ -245,6 +245,18 @@ async function warehouseSync() {
             }
         })(); // immediately invoked async function
 
+
+        // Step 5: Heartbeat for BetterStack
+        (async () => {
+            try {
+                const heartBeatResponse = await axios.get(
+                    "https://uptime.betterstack.com/api/v1/heartbeat/JxbCeHKYLYuje9ZRuvv9WhyQ"
+                )
+            } catch (err) {
+                console.log("Betterstack heartbeat problem: ", err.message || err);
+            }
+        })()
+
         return stockSyncResponse.data;
 
     } catch (err) {
