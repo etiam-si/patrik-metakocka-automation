@@ -79,9 +79,14 @@ x-api-key: <your-api-key>
 1. Clone the repo
 
    ```bash
-   git clone https://github.com/youruser/patrik-metakocka-automation.git
+   git clone https://github.com/etiam-si/patrik-metakocka-automation
    cd patrik-metakocka-automation
    ```
+    
+   ```bash
+    git clone git@github.com:etiam-si/patrik-metakocka-automation.git
+    cd patrik-metakocka-automation
+    ```
 
 2. Install dependencies
 
