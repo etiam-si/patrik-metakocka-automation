@@ -7,5 +7,3 @@ services:
     volumes:
       - /var/storage/patrik:/data
     restart: unless-stopped
-    environment:
-      - TZ=Europe/Belgrade
