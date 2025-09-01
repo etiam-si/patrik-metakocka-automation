@@ -174,17 +174,15 @@ function getTimestamp() {
     return `${yyyy}${mm}${dd}_${hh}${min}${ss}`;
 }
 
-
 async function warehouseSync() {
-    console.log(`Warehouse sync ${getTimestamp()}`);
     try {
-        // Step 1: Get stock from MK SLO
+        // Step 1: Get stock from SOURCE
         const warehouseStockResponse = await axios.post(
             `${config.metakocka.baseUrl}${config.metakocka.warehouseStockPath}`,
             {
-                "secret_key": process.env.MK_SECRET_KEY_T4A,
-                "company_id": process.env.MK_COMPANY_ID_T4A,
-                "wh_id_list": process.env.MK_SLO_WH_ID_T4A
+                "secret_key": process.env.MK_SECRET_KEY_SOURCE,
+                "company_id": process.env.MK_COMPANY_ID_SOURCE,
+                "wh_id_list": process.env.MK_SOURCE_WAREHOUSE_ID
             },
             {
                 headers: {
@@ -200,12 +198,12 @@ async function warehouseSync() {
             warehouse_id: process.env.MK_T4A_WAREHOUSE_ID
         }));
 
-        // Step 2: Sync stock to CREAGLOBE
+        // Step 2: Sync stock to TARGET warehouse
         const stockSyncResponse = await axios.post(
             `${config.metakocka.baseUrl}${config.metakocka.syncStockPath}`,
             {
-                "secret_key": process.env.MK_SECRET_KEY_CREAGLOBE,
-                "company_id": process.env.MK_COMPANY_ID_CREAGLOBE,
+                "secret_key": process.env.MK_SECRET_KEY_TARGET,
+                "company_id": process.env.MK_COMPANY_ID_TARGET,
                 "stock_list": syncStockPreparedArray
             },
             {
@@ -222,7 +220,6 @@ async function warehouseSync() {
         // Step 3: Heartbeat for BetterStack
         (async () => {
             try {
-                console.log("HeartBeat")
                 const heartBeatResponse = await axios.get(
                     process.env.BETTER_STACK_WH_SYNC_HEARTBEAT
                 )
