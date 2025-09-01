@@ -191,11 +191,13 @@ async function warehouseSync() {
             }
         );
 
+        console.log(warehouseStockResponse.data);
+
         let sloWhStockArray = warehouseStockResponse.data.stock_list;
         let syncStockPreparedArray = sloWhStockArray.map(item => ({
             product_code: item.code,
             amount: item.amount,
-            warehouse_id: process.env.MK_T4A_WAREHOUSE_ID
+            warehouse_id: process.env.MK_TARGET_WAREHOUSE_ID
         }));
 
         // Step 2: Sync stock to TARGET warehouse
