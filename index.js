@@ -191,7 +191,11 @@ async function warehouseSync() {
             }
         );
 
-        console.log(warehouseStockResponse.data);
+        if (!warehouseStockResponse.data || !warehouseStockResponse.data.stock_list) {
+            // Fail heartbeat to BetterStack
+            warehouseSyncHeartBeat(false, warehouseStockResponse.data);
+            throw new Error("Stock response missing or invalid");
+        }
 
         let sloWhStockArray = warehouseStockResponse.data.stock_list;
         let syncStockPreparedArray = sloWhStockArray.map(item => ({
@@ -216,19 +220,13 @@ async function warehouseSync() {
         );
 
         if (stockSyncResponse.data.opr_desc != "Sync successful") {
+            // Fail heartbeat to BetterStack
+            warehouseSyncHeartBeat(false, stockSyncResponse.data);
             throw new Error("Error warehouse sync!");
         }
-
-        // Step 3: Heartbeat for BetterStack
-        (async () => {
-            try {
-                const heartBeatResponse = await axios.get(
-                    process.env.BETTER_STACK_WH_SYNC_HEARTBEAT
-                )
-            } catch (err) {
-                console.log("Betterstack heartbeat problem: ", err.message || err);
-            }
-        })();
+        
+        // Step 3: Successful heartbeat for BetterStack
+        warehouseSyncHeartBeat();
 
         // Step 4 & 5: Fire-and-forget Google Drive operations
         // so that warehouse sync endpoint is faster &
@@ -285,4 +283,18 @@ function startOrUpdateWarehouseCron(cronExpression) {
     });
 
     console.log("Warehouse sync cron job scheduled:", cronExpression);
+}
+
+async function warehouseSyncHeartBeat(success = true, errorMessage = {}) {
+    try {
+        const url = success
+            ? process.env.BETTER_STACK_WH_SYNC_HEARTBEAT
+            : `${process.env.BETTER_STACK_WH_SYNC_HEARTBEAT}/fail`;
+
+        const heartBeatResponse = await axios.post(url, errorMessage);
+
+        return heartBeatResponse.data;
+    } catch (err) {
+        console.log("Betterstack heartbeat problem:", err.message || err);
+    }
 }
