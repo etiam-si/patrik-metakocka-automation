@@ -11,6 +11,7 @@ const cron = require("node-cron");
 const express = require("express");
 const rateLimit = require("express-rate-limit");
 const { isValidCron } = require("cron-validator");
+const Database = require('better-sqlite3');
 
 // Local modules
 const { loadCronExpression } = require("./cron");
@@ -42,6 +43,18 @@ app.use(apiLimiter);
 
 // Parse JSON payloads and make them available on req.body
 app.use(express.json());
+
+// SQLite database
+const db = new Database(process.env.DB_FILE_PATH || "./db/patrik.db");
+db.prepare(`
+  CREATE TABLE IF NOT EXISTS warehouse_sync_log (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    link TEXT,
+    sync_name TEXT DEFAULT 'T4A',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  )
+`).run();
+
 
 // Holds the warehouse sync cron job instance for later control
 var WAREHOUSE_SYNC_CRON_JOB;
@@ -81,6 +94,24 @@ app.post("/api/v1/warehouse/sync", authenticate, async (req, res) => {
     } catch (err) {
         // Handle errors and respond with status 500
         res.status(500).json({ error: err.message || "Internal Server Error!" });
+    }
+});
+
+app.get("/api/v1/warehouse/sync/logs", async (req, res) => {
+    try {
+        const limit = parseInt(req.query.limit) || 10;
+
+        const rows = db.prepare(`
+            SELECT link, sync_name, created_at
+            FROM warehouse_sync_log
+            ORDER BY created_at DESC
+            LIMIT ?
+        `).all(limit);
+
+        res.json(rows);
+    } catch (err) {
+        console.error("Error fetching warehouse logs:", err);
+        res.status(500).json({ error: "Internal Server Error!" });
     }
 });
 
@@ -154,6 +185,8 @@ app.get("/api/v1/schedules/warehouse-sync", async (req, res) => {
     }
 });
 
+
+app.use("/data", express.static(process.env.PUBLIC_DATA_FILE_PATH || "tmp"));
 app.use(express.static("public"));
 
 // Start server
@@ -224,38 +257,65 @@ async function warehouseSync() {
             warehouseSyncHeartBeat(false, stockSyncResponse.data);
             throw new Error("Error warehouse sync!");
         }
-        
+
         // Step 3: Successful heartbeat for BetterStack
         warehouseSyncHeartBeat();
 
-        // Step 4 & 5: Fire-and-forget Google Drive operations
-        // so that warehouse sync endpoint is faster &
-        // GDrive is synced in background
+        var fileTimestamp = getTimestamp();
+        // Step 4: Create JSON file
         (async () => {
             try {
-                const storeStockLogFileResponse = await axios.post(
-                    config.googleDrive.macros.saveLogFile,
-                    {
-                        api_key: process.env.API_KEY,
-                        items: syncStockPreparedArray
-                    }
-                );
+                // Use current directory if PUBLIC_DATA_FILE_PATH is empty
+                const folderPath = process.env.PUBLIC_DATA_FILE_PATH || "./tmp";
 
-                if (storeStockLogFileResponse.data.success) {
-                    await axios.post(
-                        config.googleDrive.macros.updateSyncList,
-                        {
-                            api_key: process.env.API_KEY,
-                            stock_link: storeStockLogFileResponse.data.stock_log_link
-                        }
-                    );
-                } else {
-                    console.error("Drive log save failed");
-                }
+                // Ensure the folder exists
+                await fs.mkdir(folderPath, { recursive: true });
+
+                // Build file path
+                const filePath = path.join(folderPath, `${fileTimestamp}.json`);
+
+                // Write JSON file
+                await fs.writeFile(filePath, JSON.stringify(syncStockPreparedArray, null, 2));
+
+                db.prepare(`
+                    INSERT INTO warehouse_sync_log (link, sync_name) 
+                    VALUES (?, ?)
+                `).run(`${fileTimestamp}.json`, "T4A"); // "warehouse_sync" can be dynamic
             } catch (err) {
-                console.error("Background Google Drive sync failed:", err.message || err);
+                console.log("Error saving JSON file: ", err)
             }
-        })(); // immediately invoked async function
+        })();
+
+        // LEGACY: Google drive is really slow. We will not use it unless we need to
+        // Upload to google drive
+        // Step 5 & 6: Fire-and-forget Google Drive operations
+        // so that warehouse sync endpoint is faster &
+        // GDrive is synced in background
+        // (async () => {
+        //     try {
+        //         const storeStockLogFileResponse = await axios.post(
+        //             config.googleDrive.macros.saveLogFile,
+        //             {
+        //                 api_key: process.env.API_KEY,
+        //                 items: syncStockPreparedArray
+        //             }
+        //         );
+
+        //         if (storeStockLogFileResponse.data.success) {
+        //             await axios.post(
+        //                 config.googleDrive.macros.updateSyncList,
+        //                 {
+        //                     api_key: process.env.API_KEY,
+        //                     stock_link: storeStockLogFileResponse.data.stock_log_link
+        //                 }
+        //             );
+        //         } else {
+        //             console.error("Drive log save failed");
+        //         }
+        //     } catch (err) {
+        //         console.error("Background Google Drive sync failed:", err.message || err);
+        //     }
+        // })(); // immediately invoked async function
 
         return stockSyncResponse.data;
 
