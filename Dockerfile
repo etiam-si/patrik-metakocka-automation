@@ -6,6 +6,8 @@ WORKDIR /usr/src/app
 
 ENV ENV_FILE_PATH=/data/.env
 ENV CRON_FILE_PATH=/data/cron.json
+ENV DB_FILE_PATH=/data/patrik.db
+ENV PUBLIC_DATA_FILE_PATH=/data/public
 
 # Copy package files and install dependencies
 COPY package*.json ./
