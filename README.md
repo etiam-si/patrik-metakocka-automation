@@ -30,11 +30,22 @@ The **Warehouse Sync** service transfers stock levels from **source warehouses**
 
 ```mermaid
 flowchart LR
-    A[Source Warehouses] --> B[Sync Service]
-    B --> C[Creaglobe Warehouse]
-    B -->|Success| D[BetterStack ✓]
-    B -->|Failure| E[BetterStack ✗]
-    B --> F[Logs: JSON + SQLite]
+    subgraph Sources[Source Warehouses]
+        A1[Germany Warehouse]
+        A2[T4A Warehouse]
+    end
+
+    A1 --> B[Sync Service]
+    A2 --> B
+
+    B --> C[Creaglobe Germany Warehouse]
+    B --> D[Creaglobe T4A Warehouse]
+
+
+    B -->|Success| E[BetterStack ✓]
+    B -->|Failure| F[BetterStack ✗]
+    B --> G[Logs: JSON + SQLite]
+
 ```
 
 1. Fetch stock lists from **T4A** and **Germany Main**.
