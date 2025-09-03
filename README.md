@@ -32,8 +32,8 @@ The **Warehouse Sync** service automatically transfers stock levels from **sourc
 flowchart LR
     A[Source Warehouses (T4A, Germany)] -->|fetch stock| B[Sync Service]
     B -->|push stock| C[Creaglobe Metakocka Warehouse]
-    B -->|success → base URL| D[BetterStack ✓]
-    B -->|failure → base URL/fail| D[BetterStack ✗]
+    B -->|success -> base URL| D[BetterStack Success]
+    B -->|failure -> base URL/fail| D[BetterStack Failure]
     B -->|save logs| E[Local JSON Files + SQLite Logs]
 ```
 
