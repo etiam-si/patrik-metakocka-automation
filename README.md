@@ -28,15 +28,6 @@ The **Warehouse Sync** service automatically transfers stock levels from **sourc
 
 ## ⚙️ How It Works
 
-```mermaid
-flowchart LR
-    A[Source Warehouses (T4A, Germany)] -->|fetch stock| B[Sync Service]
-    B -->|push stock| C[Creaglobe Metakocka Warehouse]
-    B -->|success -> base URL| D[BetterStack Success]
-    B -->|failure -> base URL/fail| D[BetterStack Failure]
-    B -->|save logs| E[Local JSON Files + SQLite Logs]
-```
-
 1. Fetch stock lists from **T4A** and **Germany Main** warehouses.
 2. Transform data into **Creaglobe-compatible** format.
 3. Push stock updates into **Creaglobe Metakocka**.
