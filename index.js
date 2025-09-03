@@ -206,8 +206,9 @@ function getTimestamp() {
     const hh = String(now.getHours()).padStart(2, '0');
     const min = String(now.getMinutes()).padStart(2, '0');
     const ss = String(now.getSeconds()).padStart(2, '0');
+    const ms = String(now.getMilliseconds()).padStart(3, '0'); // Add ms
 
-    return `${yyyy}${mm}${dd}_${hh}${min}${ss}`;
+    return `${yyyy}${mm}${dd}_${hh}${min}${ss}${ms}`;
 }
 
 async function warehousesSync() {
@@ -245,7 +246,7 @@ async function warehousesSync() {
 
         const germanyWhStockArray = [];
         const stream = Readable.from(germanyWarehouseResponse.data);
-        for await (const row of stream.pipe(csv({separator: ";"}))) {
+        for await (const row of stream.pipe(csv({ separator: ";" }))) {
             germanyWhStockArray.push(row);
         }
 
@@ -274,7 +275,7 @@ async function warehousesSync() {
                     "Content-Type": "application/json"
                 }
             }
-        );                  
+        );
 
         if (stockSyncResponse.data.opr_desc != "Sync successful") {
             // Fail heartbeat to BetterStack
@@ -287,25 +288,14 @@ async function warehousesSync() {
 
         var fileTimestamp = getTimestamp();
 
-        // Step 6: Create JSON file
+        // Step 7: Save JSON file
         (async () => {
             try {
-                // Use current directory if PUBLIC_DATA_FILE_PATH is empty
-                const folderPath = process.env.PUBLIC_DATA_FILE_PATH || "./tmp";
+                // Save SLO stock
+                await saveSyncFile(syncSloStockPreparedArray, fileTimestamp, "T4A");
 
-                // Ensure the folder exists
-                await fs.mkdir(folderPath, { recursive: true });
-
-                // Build file path
-                const filePath = path.join(folderPath, `${fileTimestamp}.json`);
-
-                // Write JSON file
-                await fs.writeFile(filePath, JSON.stringify(syncSloStockPreparedArray, null, 2));
-
-                db.prepare(`
-                    INSERT INTO warehouse_sync_log (link, sync_name) 
-                    VALUES (?, ?)
-                `).run(`${fileTimestamp}.json`, "GERMANY & T4A"); // "warehouse_sync" can be dynamic
+                // Save GER stock
+                await saveSyncFile(syncGerStockPreparedArray, fileTimestamp, "Germany");
             } catch (err) {
                 console.log("Error saving JSON file: ", err)
             }
@@ -379,5 +369,32 @@ async function warehousesSyncHeartBeat(success = true, errorMessage = {}) {
         return heartBeatResponse.data;
     } catch (err) {
         console.log("Betterstack heartbeat problem:", err.message || err);
+    }
+}
+
+// Utility function to save JSON and log to DB
+async function saveSyncFile(dataArray, fileTimestamp, syncName) {
+    try {
+        // Use current directory if PUBLIC_DATA_FILE_PATH is empty
+        const folderPath = process.env.PUBLIC_DATA_FILE_PATH || "./tmp";
+
+        // Ensure the folder exists
+        await fs.mkdir(folderPath, { recursive: true });
+
+        // Build file path
+        const filePath = path.join(folderPath, `${fileTimestamp}_${syncName}.json`);
+
+        // Write JSON file
+        await fs.writeFile(filePath, JSON.stringify(dataArray, null, 2));
+
+        // Insert into DB
+        db.prepare(`
+            INSERT INTO warehouse_sync_log (link, sync_name) 
+            VALUES (?, ?)
+        `).run(`${fileTimestamp}_${syncName}.json`, syncName);
+
+        console.log(`✅ Saved ${syncName} sync file: ${filePath}`);
+    } catch (err) {
+        console.error(`❌ Error saving JSON for ${syncName}:`, err);
     }
 }
