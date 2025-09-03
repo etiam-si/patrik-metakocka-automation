@@ -8,51 +8,56 @@ Automation services for **Metakocka**, built to streamline warehouse operations 
 
 [![Better Stack Badge](https://uptime.betterstack.com/status-badges/v2/monitor/24buy.svg)](https://uptime.betterstack.com/?utm_source=status_badge)
 
-The **Warehouse Sync** service automatically transfers stock levels from **source warehouses** (e.g., *Time 4 Action* or *Germany Main*) to the **Creaglobe Metakocka warehouse**, ensuring that stock data is always accurate and up to date.
+The **Warehouse Sync** service transfers stock levels from **source warehouses** (Time 4 Action, Germany) to the **Creaglobe Metakocka warehouse**, keeping the data up to date and accurate.
 
 ---
 
 ## ✨ Features
 
-* 🔄 **One-way sync** (source → target warehouse)
-* ⏰ **Scheduled execution** via cron (fully configurable)
-* ▶️ **Manual "Run Now"** option (via API or web UI)
-* 📂 **Sync results archived** as JSON files (local folder)
-* ❤️ **BetterStack heartbeats**:
+* 🔄 One-way sync (source → target warehouse)
+* ⏰ Scheduled execution via cron (configurable)
+* ▶️ Manual **Run Now** option (via API or web UI)
+* 📂 Sync results archived as JSON files (local folder)
+* ❤️ BetterStack heartbeats:
 
-  * success → base URL
-  * failure → base URL + `/fail`
-* 🌐 **Web dashboard** for managing schedules and viewing logs
+  * Success → **base URL**
+  * Failure → **base URL + `/fail`**
+* 🌐 Web dashboard for managing schedules and viewing logs
 
 ---
 
 ## ⚙️ How It Works
 
-1. Fetch stock lists from **T4A** and **Germany Main** warehouses.
+```mermaid
+flowchart LR
+    A[Source Warehouses] --> B[Sync Service]
+    B --> C[Creaglobe Warehouse]
+    B -->|Success| D[BetterStack ✓]
+    B -->|Failure| E[BetterStack ✗]
+    B --> F[Logs: JSON + SQLite]
+```
+
+1. Fetch stock lists from **T4A** and **Germany Main**.
 2. Transform data into **Creaglobe-compatible** format.
 3. Push stock updates into **Creaglobe Metakocka**.
-4. On **success**:
+4. Report results to **BetterStack**:
 
-   * ✅ Call BetterStack **base URL**.
-   * ✅ Save JSON files (stock lists).
-   * ✅ Insert log entry into SQLite (`warehouse_sync_log`).
-5. On **failure**:
-
-   * ❌ Call BetterStack **base URL + `/fail`**.
-   * ❌ Log entry still stored in DB.
+   * ✅ Success → base URL
+   * ❌ Failure → base URL + `/fail`
+5. Store sync results in **JSON files + SQLite logs**.
 
 ---
 
 ## 🌐 Web Dashboard
 
-A simple **scheduler dashboard** (`index.html` served from `/public`) lets you:
+The **scheduler dashboard** (`index.html` served from `/public`) lets you:
 
-* ✅ Select **minutes, hours, and days** → generates a valid cron expression
-* 🔑 Enter API key to **update sync schedule**
-* ▶️ Run sync immediately via **Run Now** button
-* 📜 View the **last 10 runs** with timestamps + links to stock JSON files
+* Select **minutes, hours, and days** → generates a valid cron expression
+* Enter API key to **update schedule**
+* Run sync immediately with **Run Now**
+* View the **last 10 runs** (timestamps + stock JSON links)
 
-📸 Screenshot:
+📸 Example:
 
 ![Scheduler UI](docs/webui.png)
 
@@ -60,20 +65,33 @@ A simple **scheduler dashboard** (`index.html` served from `/public`) lets you:
 
 ## 🔑 API Endpoints
 
-(unchanged — uptime, sync, logs, schedules)
+| Method | Endpoint                           | Description                   | Auth |
+| ------ | ---------------------------------- | ----------------------------- | ---- |
+| `GET`  | `/api/v1/uptime`                   | Health check                  | ❌    |
+| `POST` | `/api/v1/warehouse/sync`           | Run sync immediately          | ✅    |
+| `GET`  | `/api/v1/warehouse/sync/logs`      | Fetch latest sync logs        | ❌    |
+| `PUT`  | `/api/v1/schedules/warehouse-sync` | Update sync cron expression   | ✅    |
+| `GET`  | `/api/v1/schedules/warehouse-sync` | Fetch current cron expression | ❌    |
+
+👉 Authentication uses header:
+
+```
+x-api-key: <your-api-key>
+```
 
 ---
 
 ## 📂 Logs & Storage
 
-* **JSON stock logs** → saved in `./tmp` (or path from `PUBLIC_DATA_FILE_PATH`).
+* **JSON stock logs** → saved in `./tmp` (or path from `PUBLIC_DATA_FILE_PATH`)
 
   * Format: `{TIMESTAMP}_{SOURCE}.json`
   * Example: `20250903_141523001_T4A.json`
-* **SQLite DB** → located at `./db/patrik.db` (or `DB_FILE_PATH` if set).
+
+* **SQLite DB** → stored in `./db/patrik.db` (or `DB_FILE_PATH`)
 
   * Table: `warehouse_sync_log`
-  * Tracks: `id`, `link`, `sync_name`, `created_at`.
+  * Fields: `id`, `link`, `sync_name`, `created_at`
 
 ---
 
@@ -108,10 +126,10 @@ A simple **scheduler dashboard** (`index.html` served from `/public`) lets you:
    MK_CREAGLOBE_WAREHOUSE_ID_T4A=...
    MK_CREAGLOBE_WAREHOUSE_ID_GERMANY_ONE=...
 
-   # BetterStack heartbeat (base URL only)
+   # BetterStack heartbeat
    BETTER_STACK_WH_SYNC_HEARTBEAT=https://uptime.betterstack.com/heartbeat/xxxxx
-   # → Success = base URL
-   # → Failure = base URL + /fail
+   # Success → base URL
+   # Failure → base URL + /fail
    ```
 
 4. **Run the service**
@@ -120,30 +138,30 @@ A simple **scheduler dashboard** (`index.html` served from `/public`) lets you:
    node index.js
    ```
 
-   The server starts at:
+   Server starts at:
    👉 `http://localhost:3000`
 
 ---
 
-## ⏱️ Cron Expression Cheat Sheet
+## ⏱️ Cron Expression Examples
 
-| Expression    | Meaning                              |
-| ------------- | ------------------------------------ |
-| `* * * * *`   | Every minute                         |
-| `*/5 * * * *` | Every 5 minutes                      |
-| `0 * * * *`   | Every hour                           |
-| `0 8 * * *`   | Every day at 08:00                   |
-| `0 8 * * 1-5` | Every weekday at 08:00               |
-| `0 0 1 * *`   | First day of every month at midnight |
+| Expression    | Meaning                           |
+| ------------- | --------------------------------- |
+| `* * * * *`   | Every minute                      |
+| `*/5 * * * *` | Every 5 minutes                   |
+| `0 * * * *`   | Every hour                        |
+| `0 8 * * *`   | Every day at 08:00                |
+| `0 8 * * 1-5` | Every weekday at 08:00            |
+| `0 0 1 * *`   | First day of every month at 00:00 |
 
-👉 Use the **web dashboard** to generate valid expressions without remembering syntax.
+👉 Use the **web dashboard** to generate cron expressions easily.
 
 ---
 
 ## 📝 Notes
 
-* ✅ **Success heartbeat** → base URL
-* ❌ **Failure heartbeat** → base URL + `/fail`
-* 📂 JSON logs + DB entries are **always created**
-* 🌐 BetterStack gives **real-time visibility** into job status
-* 🛠️ Project is under **active development**
+* ✅ Success heartbeat → **base URL**
+* ❌ Failure heartbeat → **base URL + `/fail`**
+* 📂 JSON logs and DB entries are always created
+* 🌐 BetterStack provides real-time monitoring
+* 🛠️ Project is under active development
