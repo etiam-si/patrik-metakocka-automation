@@ -12,10 +12,13 @@ const express = require("express");
 const rateLimit = require("express-rate-limit");
 const { isValidCron } = require("cron-validator");
 const Database = require('better-sqlite3');
+const csv = require('csv-parser');
+const { Readable } = require('stream');
 
 // Local modules
 const { loadCronExpression } = require("./cron");
-const config = require("./config/config.json")
+const config = require("./config/config.json");
+const { error } = require("console");
 
 // Load .env: use ENV_FILE_PATH if set, otherwise fallback to local .env
 const envFilePath = process.env.ENV_FILE_PATH || "./.env";
@@ -63,7 +66,7 @@ var WAREHOUSE_SYNC_CRON_JOB;
 const initialCronExpression = loadCronExpression();
 
 // Start or update the warehouse sync job with the loaded schedule
-startOrUpdateWarehouseCron(initialCronExpression);
+startOrUpdateWarehousesCron(initialCronExpression);
 
 // API key from environment for route authentication
 const API_KEY = process.env.API_KEY;
@@ -87,7 +90,7 @@ app.get("/api/v1/uptime", (req, res) => {
 app.post("/api/v1/warehouse/sync", authenticate, async (req, res) => {
     try {
         // Perform the warehouse sync
-        const result = await warehouseSync();
+        const result = await warehousesSync();
 
         // Return sync result as JSON
         res.json(result);
@@ -145,7 +148,7 @@ app.put("/api/v1/schedules/warehouse-sync", authenticate, async (req, res) => {
         currentConfig.warehouseSync = warehouseSync;
 
         // Apply the new schedule immediately
-        startOrUpdateWarehouseCron(warehouseSync);
+        startOrUpdateWarehousesCron(warehouseSync);
 
         // Persist the updated config
         await fs.writeFile(cronFilePath, JSON.stringify(currentConfig, null, 2), "utf8");
@@ -207,15 +210,15 @@ function getTimestamp() {
     return `${yyyy}${mm}${dd}_${hh}${min}${ss}`;
 }
 
-async function warehouseSync() {
+async function warehousesSync() {
     try {
-        // Step 1: Get stock from SOURCE
+        // Step 1: Get stock from T4A
         const warehouseStockResponse = await axios.post(
             `${config.metakocka.baseUrl}${config.metakocka.warehouseStockPath}`,
             {
-                "secret_key": process.env.MK_SECRET_KEY_SOURCE,
-                "company_id": process.env.MK_COMPANY_ID_SOURCE,
-                "wh_id_list": process.env.MK_SOURCE_WAREHOUSE_ID
+                "secret_key": process.env.MK_SECRET_KEY_T4A,
+                "company_id": process.env.MK_COMPANY_ID_T4A,
+                "wh_id_list": process.env.MK_T4A_WAREHOUSE_ID
             },
             {
                 headers: {
@@ -226,43 +229,65 @@ async function warehouseSync() {
 
         if (!warehouseStockResponse.data || !warehouseStockResponse.data.stock_list) {
             // Fail heartbeat to BetterStack
-            warehouseSyncHeartBeat(false, warehouseStockResponse.data);
+            warehousesSyncHeartBeat(false, warehouseStockResponse.data);
             throw new Error("Stock response missing or invalid");
         }
 
         let sloWhStockArray = warehouseStockResponse.data.stock_list;
-        let syncStockPreparedArray = sloWhStockArray.map(item => ({
+        let syncSloStockPreparedArray = sloWhStockArray.map(item => ({
             product_code: item.code,
             amount: item.amount,
-            warehouse_id: process.env.MK_TARGET_WAREHOUSE_ID
+            warehouse_id: process.env.MK_CREAGLOBE_WAREHOUSE_ID_T4A
         }));
 
-        // Step 2: Sync stock to TARGET warehouse
+        // Step 2: Get stock from Germany Main (ProMode)
+        const germanyWarehouseResponse = await axios.get(config.promode.warehouseStockCSV, { responseType: 'text' })
+
+        const germanyWhStockArray = [];
+        const stream = Readable.from(germanyWarehouseResponse.data);
+        for await (const row of stream.pipe(csv({separator: ";"}))) {
+            germanyWhStockArray.push(row);
+        }
+
+        let syncGerStockPreparedArray = germanyWhStockArray.map(item => ({
+            product_code: item.barcode,
+            amount: item.quantity,
+            warehouse_id: process.env.MK_CREAGLOBE_WAREHOUSE_ID_GERMANY_ONE
+        }));
+
+        // Step 3: Join Germany Man & Slo Warehouse
+        const combinedStockArray = [
+            ...syncSloStockPreparedArray,
+            ...syncGerStockPreparedArray
+        ]
+
+        // Step 4: Sync stock to CREAGLOBE warehouse
         const stockSyncResponse = await axios.post(
             `${config.metakocka.baseUrl}${config.metakocka.syncStockPath}`,
             {
-                "secret_key": process.env.MK_SECRET_KEY_TARGET,
-                "company_id": process.env.MK_COMPANY_ID_TARGET,
-                "stock_list": syncStockPreparedArray
+                "secret_key": process.env.MK_SECRET_KEY_CREAGLOBE,
+                "company_id": process.env.MK_COMPANY_ID_CREAGLOBE,
+                "stock_list": combinedStockArray
             },
             {
                 headers: {
                     "Content-Type": "application/json"
                 }
             }
-        );
+        );                  
 
         if (stockSyncResponse.data.opr_desc != "Sync successful") {
             // Fail heartbeat to BetterStack
-            warehouseSyncHeartBeat(false, stockSyncResponse.data);
+            warehousesSyncHeartBeat(false, stockSyncResponse.data);
             throw new Error("Error warehouse sync!");
         }
 
-        // Step 3: Successful heartbeat for BetterStack
-        warehouseSyncHeartBeat();
+        // Step 5: Successful heartbeat for BetterStack
+        warehousesSyncHeartBeat();
 
         var fileTimestamp = getTimestamp();
-        // Step 4: Create JSON file
+
+        // Step 6: Create JSON file
         (async () => {
             try {
                 // Use current directory if PUBLIC_DATA_FILE_PATH is empty
@@ -275,12 +300,12 @@ async function warehouseSync() {
                 const filePath = path.join(folderPath, `${fileTimestamp}.json`);
 
                 // Write JSON file
-                await fs.writeFile(filePath, JSON.stringify(syncStockPreparedArray, null, 2));
+                await fs.writeFile(filePath, JSON.stringify(syncSloStockPreparedArray, null, 2));
 
                 db.prepare(`
                     INSERT INTO warehouse_sync_log (link, sync_name) 
                     VALUES (?, ?)
-                `).run(`${fileTimestamp}.json`, "T4A"); // "warehouse_sync" can be dynamic
+                `).run(`${fileTimestamp}.json`, "GERMANY & T4A"); // "warehouse_sync" can be dynamic
             } catch (err) {
                 console.log("Error saving JSON file: ", err)
             }
@@ -316,7 +341,6 @@ async function warehouseSync() {
         //         console.error("Background Google Drive sync failed:", err.message || err);
         //     }
         // })(); // immediately invoked async function
-
         return stockSyncResponse.data;
 
     } catch (err) {
@@ -325,8 +349,7 @@ async function warehouseSync() {
     }
 }
 
-
-function startOrUpdateWarehouseCron(cronExpression) {
+function startOrUpdateWarehousesCron(cronExpression) {
     // Stop existing job if running
     if (WAREHOUSE_SYNC_CRON_JOB) {
         WAREHOUSE_SYNC_CRON_JOB.stop();
@@ -336,7 +359,7 @@ function startOrUpdateWarehouseCron(cronExpression) {
     // Start new cron job
     WAREHOUSE_SYNC_CRON_JOB = cron.schedule(cronExpression, async () => {
         try {
-            await warehouseSync();
+            await warehousesSync();
         } catch (err) {
             console.error("Scheduled sync failed:", err.message || err);
         }
@@ -345,7 +368,7 @@ function startOrUpdateWarehouseCron(cronExpression) {
     console.log("Warehouse sync cron job scheduled:", cronExpression);
 }
 
-async function warehouseSyncHeartBeat(success = true, errorMessage = {}) {
+async function warehousesSyncHeartBeat(success = true, errorMessage = {}) {
     try {
         const url = success
             ? process.env.BETTER_STACK_WH_SYNC_HEARTBEAT
