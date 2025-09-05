@@ -256,6 +256,8 @@ async function warehousesSync() {
             warehouse_id: process.env.MK_CREAGLOBE_WAREHOUSE_ID_GERMANY_ONE
         }));
 
+        syncGerStockPreparedArray = sumByProductCode(syncGerStockPreparedArray);
+
         // Step 3: Join Germany Man & Slo Warehouse
         const combinedStockArray = [
             ...syncSloStockPreparedArray,
@@ -397,4 +399,20 @@ async function saveSyncFile(dataArray, fileTimestamp, syncName) {
     } catch (err) {
         console.error(`❌ Error saving JSON for ${syncName}:`, err);
     }
+}
+
+function sumByProductCode(data) {
+  return Object.values(
+    data.reduce((acc, item) => {
+      const code = item.product_code;
+      if (!code) return acc; // skip if no code
+
+      if (!acc[code]) {
+        acc[code] = { ...item, amount: Number(item.amount) };
+      } else {
+        acc[code].amount += Number(item.amount);
+      }
+      return acc;
+    }, {})
+  );
 }
