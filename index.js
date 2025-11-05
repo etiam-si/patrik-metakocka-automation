@@ -227,6 +227,7 @@ async function warehousesSync() {
                 }
             }
         );
+        console.log("Step 1")
 
         if (!warehouseStockResponse.data || !warehouseStockResponse.data.stock_list) {
             // Fail heartbeat to BetterStack
@@ -240,6 +241,8 @@ async function warehousesSync() {
             amount: item.amount,
             warehouse_id: process.env.MK_CREAGLOBE_WAREHOUSE_ID_T4A
         }));
+
+        syncSloStockPreparedArray = sumByProductCode(syncSloStockPreparedArray);
 
         // Step 2: Get stock from Germany Main (ProMode)
         const germanyWarehouseResponse = await axios.get(config.promode.warehouseStockCSV, { responseType: 'text' })
@@ -258,11 +261,14 @@ async function warehousesSync() {
 
         syncGerStockPreparedArray = sumByProductCode(syncGerStockPreparedArray);
 
+        console.log("Step 2")
+
         // Step 3: Join Germany Man & Slo Warehouse
         const combinedStockArray = [
             ...syncSloStockPreparedArray,
             ...syncGerStockPreparedArray
-        ]
+        ]  
+        console.log("Step 3")      
 
         // Step 4: Sync stock to CREAGLOBE warehouse
         const stockSyncResponse = await axios.post(
@@ -278,6 +284,7 @@ async function warehousesSync() {
                 }
             }
         );
+        console.log("Step 4")
 
         if (stockSyncResponse.data.opr_desc != "Sync successful") {
             // Fail heartbeat to BetterStack
@@ -287,6 +294,7 @@ async function warehousesSync() {
 
         // Step 5: Successful heartbeat for BetterStack
         warehousesSyncHeartBeat();
+        console.log("Step 5")
 
         var fileTimestamp = getTimestamp();
 
@@ -333,7 +341,7 @@ async function warehousesSync() {
         //         console.error("Background Google Drive sync failed:", err.message || err);
         //     }
         // })(); // immediately invoked async function
-        return stockSyncResponse.data;
+        return {response: stockSyncResponse.data, data: combinedStockArray};
 
     } catch (err) {
         console.error("Warehouse Sync failed:", err.message || err);
