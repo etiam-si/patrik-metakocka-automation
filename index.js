@@ -31,18 +31,18 @@ const PORT = 3000;
 app.set('trust proxy', ["192.168.1.180"]);
 
 // prevent API overload
-const apiLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // limit each IP to 100 requests per windowMs
-    message: {
-        error: "Too many requests from this IP, please try again later."
-    },
-    standardHeaders: true, // Return rate limit info in headers
-    legacyHeaders: false,   // Disable old headers
-});
+// const apiLimiter = rateLimit({
+//     windowMs: 15 * 60 * 1000, // 15 minutes
+//     max: 100, // limit each IP to 100 requests per windowMs
+//     message: {
+//         error: "Too many requests from this IP, please try again later."
+//     },
+//     standardHeaders: true, // Return rate limit info in headers
+//     legacyHeaders: false,   // Disable old headers
+// });
 
-// Apply rate limiting to all incoming requests
-app.use(apiLimiter);
+// // Apply rate limiting to all incoming requests
+// app.use(apiLimiter);
 
 // Parse JSON payloads and make them available on req.body
 app.use(express.json());
