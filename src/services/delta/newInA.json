@@ -1,0 +1,93 @@
+[
+  {
+    "count_code": "926",
+    "code": "P05230009900",
+    "barcode": "4262431699277",
+    "name": "Patrik Carbon IQ Foil Set",
+    "unit": "kos",
+    "service": "true",
+    "sales": "true",
+    "activated": "true",
+    "purchasing": "true",
+    "eshop_sync": "false",
+    "localization": [
+      {
+        "language": "sl",
+        "name": "Patrik Carbon IQ Foil Set"
+      }
+    ],
+    "asset": "false",
+    "lot_numbers": "false",
+    "norm": "false",
+    "serial_numbers": "false",
+    "work": "false"
+  },
+  {
+    "count_code": "1418",
+    "code": "P13240099003",
+    "barcode": "4262434064126",
+    "name": "Patrik IQ Foil Padded Bag",
+    "unit": "kos",
+    "service": "false",
+    "sales": "true",
+    "activated": "true",
+    "purchasing": "true",
+    "eshop_sync": "false",
+    "localization": [
+      {
+        "language": "sl",
+        "name": "Patrik IQ Foil Padded Bag"
+      }
+    ],
+    "asset": "false",
+    "lot_numbers": "false",
+    "norm": "false",
+    "serial_numbers": "false",
+    "work": "false"
+  },
+  {
+    "count_code": "1419",
+    "code": "P07260023044",
+    "barcode": "4262434064133",
+    "name": "Patrik Race HA GEN2 4,4",
+    "unit": "kos",
+    "service": "false",
+    "sales": "true",
+    "activated": "true",
+    "purchasing": "true",
+    "eshop_sync": "false",
+    "localization": [
+      {
+        "language": "sl",
+        "name": "Patrik Race HA GEN2 4,4"
+      }
+    ],
+    "asset": "true",
+    "lot_numbers": "false",
+    "norm": "false",
+    "serial_numbers": "false",
+    "work": "false"
+  },
+  {
+    "count_code": "1420",
+    "code": "TEST MK",
+    "name": "TEST MK",
+    "unit": "kos",
+    "service": "false",
+    "sales": "true",
+    "activated": "true",
+    "purchasing": "true",
+    "eshop_sync": "false",
+    "localization": [
+      {
+        "language": "sl",
+        "name": "TEST MK"
+      }
+    ],
+    "asset": "false",
+    "lot_numbers": "false",
+    "norm": "false",
+    "serial_numbers": "false",
+    "work": "false"
+  }
+]

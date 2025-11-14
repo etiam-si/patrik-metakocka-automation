@@ -1,0 +1,760 @@
+[
+  {
+    "count_code": "928",
+    "code": "P02230001999",
+    "barcode": "4262431699277",
+    "name": "Patrik Carbon IQ Foil Set",
+    "unit": "kom",
+    "service": "false",
+    "sales": "true",
+    "activated": "true",
+    "purchasing": "true",
+    "eshop_sync": "true",
+    "localization": [
+      {
+        "language": "sl",
+        "name": "Patrik Carbon IQ Foil Set"
+      }
+    ],
+    "asset": "true",
+    "lot_numbers": "false",
+    "norm": "false",
+    "serial_numbers": "false",
+    "work": "false",
+    "categories": [
+      {
+        "category": "iQFOiL CLASS"
+      }
+    ]
+  },
+  {
+    "count_code": "1432",
+    "code": "P06260010590",
+    "barcode": "4262434063983",
+    "name": "Patrik AEON Front Wing MA 590",
+    "unit": "kos",
+    "service": "false",
+    "sales": "true",
+    "activated": "true",
+    "purchasing": "true",
+    "eshop_sync": "true",
+    "height": 21,
+    "width": 32,
+    "depth": 85,
+    "localization": [
+      {
+        "language": "sl",
+        "name": "Patrik AEON Front Wing MA 590"
+      }
+    ],
+    "asset": "false",
+    "lot_numbers": "false",
+    "norm": "false",
+    "serial_numbers": "false",
+    "work": "false",
+    "koli_package_amount": "10"
+  },
+  {
+    "count_code": "1433",
+    "code": "P06260010660",
+    "barcode": "4262434063990",
+    "name": "Patrik AEON Front Wing MA 660",
+    "unit": "kos",
+    "service": "false",
+    "sales": "true",
+    "activated": "true",
+    "purchasing": "true",
+    "eshop_sync": "true",
+    "height": 21,
+    "width": 32,
+    "depth": 97,
+    "localization": [
+      {
+        "language": "sl",
+        "name": "Patrik AEON Front Wing MA 660"
+      }
+    ],
+    "asset": "false",
+    "lot_numbers": "false",
+    "norm": "false",
+    "serial_numbers": "false",
+    "work": "false",
+    "koli_package_amount": "10"
+  },
+  {
+    "count_code": "1434",
+    "code": "P06260010730",
+    "barcode": "4262434064003",
+    "name": "Patrik AEON Front Wing MA 730",
+    "unit": "kos",
+    "service": "false",
+    "sales": "true",
+    "activated": "true",
+    "purchasing": "true",
+    "eshop_sync": "true",
+    "height": 21,
+    "width": 32,
+    "depth": 108,
+    "localization": [
+      {
+        "language": "sl",
+        "name": "Patrik AEON Front Wing MA 730"
+      }
+    ],
+    "asset": "false",
+    "lot_numbers": "false",
+    "norm": "false",
+    "serial_numbers": "false",
+    "work": "false",
+    "koli_package_amount": "10"
+  },
+  {
+    "count_code": "1435",
+    "code": "P06260010800",
+    "barcode": "4262434064010",
+    "name": "Patrik AEON Front Wing MA 800",
+    "unit": "kos",
+    "service": "false",
+    "sales": "true",
+    "activated": "true",
+    "purchasing": "true",
+    "eshop_sync": "true",
+    "height": 21,
+    "width": 32,
+    "depth": 108,
+    "localization": [
+      {
+        "language": "sl",
+        "name": "Patrik AEON Front Wing MA 800"
+      }
+    ],
+    "asset": "false",
+    "lot_numbers": "false",
+    "norm": "false",
+    "serial_numbers": "false",
+    "work": "false",
+    "koli_package_amount": "10"
+  },
+  {
+    "count_code": "1436",
+    "code": "P06260010940",
+    "barcode": "4262434064034",
+    "name": "Patrik AEON Front Wing MA 940",
+    "unit": "kos",
+    "service": "false",
+    "sales": "true",
+    "activated": "true",
+    "purchasing": "true",
+    "eshop_sync": "true",
+    "height": 21,
+    "width": 32,
+    "depth": 120,
+    "localization": [
+      {
+        "language": "sl",
+        "name": "Patrik AEON Front Wing MA 940"
+      }
+    ],
+    "asset": "false",
+    "lot_numbers": "false",
+    "norm": "false",
+    "serial_numbers": "false",
+    "work": "false",
+    "koli_package_amount": "10"
+  },
+  {
+    "count_code": "1437",
+    "code": "P06260010101",
+    "barcode": "4262434064041",
+    "name": "Patrik AEON Front Wing MA 1010",
+    "unit": "kos",
+    "service": "false",
+    "sales": "true",
+    "activated": "true",
+    "purchasing": "true",
+    "eshop_sync": "true",
+    "height": 21,
+    "width": 32,
+    "depth": 120,
+    "localization": [
+      {
+        "language": "sl",
+        "name": "Patrik AEON Front Wing MA 1010"
+      }
+    ],
+    "asset": "false",
+    "lot_numbers": "false",
+    "norm": "false",
+    "serial_numbers": "false",
+    "work": "false",
+    "koli_package_amount": "9"
+  },
+  {
+    "count_code": "1438",
+    "code": "P06260010870",
+    "barcode": "4262434064027",
+    "name": "Patrik AEON Front Wing MA 870",
+    "unit": "kos",
+    "service": "false",
+    "sales": "true",
+    "activated": "true",
+    "purchasing": "true",
+    "eshop_sync": "true",
+    "height": 21,
+    "width": 32,
+    "depth": 110,
+    "localization": [
+      {
+        "language": "sl",
+        "name": "Patrik AEON Front Wing MA 870"
+      }
+    ],
+    "asset": "false",
+    "lot_numbers": "false",
+    "norm": "false",
+    "serial_numbers": "false",
+    "work": "false",
+    "koli_package_amount": "10"
+  },
+  {
+    "count_code": "1439",
+    "code": "P06260011560",
+    "barcode": "4262434064058",
+    "name": "Patrik AEON Front Wing HA 560",
+    "unit": "kos",
+    "service": "false",
+    "sales": "true",
+    "activated": "true",
+    "purchasing": "true",
+    "eshop_sync": "true",
+    "height": 21,
+    "width": 32,
+    "depth": 85,
+    "localization": [
+      {
+        "language": "sl",
+        "name": "Patrik AEON Front Wing HA 560"
+      }
+    ],
+    "asset": "false",
+    "lot_numbers": "false",
+    "norm": "false",
+    "serial_numbers": "false",
+    "work": "false",
+    "koli_package_amount": "10"
+  },
+  {
+    "count_code": "1440",
+    "code": "P06260011640",
+    "barcode": "4262434064065",
+    "name": "Patrik AEON Front Wing HA 640",
+    "unit": "kos",
+    "service": "false",
+    "sales": "true",
+    "activated": "true",
+    "purchasing": "true",
+    "eshop_sync": "true",
+    "height": 21,
+    "width": 32,
+    "depth": 97,
+    "localization": [
+      {
+        "language": "sl",
+        "name": "Patrik AEON Front Wing HA 640"
+      }
+    ],
+    "asset": "false",
+    "lot_numbers": "false",
+    "norm": "false",
+    "serial_numbers": "false",
+    "work": "false",
+    "koli_package_amount": "10"
+  },
+  {
+    "count_code": "1441",
+    "code": "P06260011720",
+    "barcode": "4262434064072",
+    "name": "Patrik AEON Front Wing HA 720",
+    "unit": "kos",
+    "service": "false",
+    "sales": "true",
+    "activated": "true",
+    "purchasing": "true",
+    "eshop_sync": "true",
+    "height": 21,
+    "width": 32,
+    "depth": 108,
+    "localization": [
+      {
+        "language": "sl",
+        "name": "Patrik AEON Front Wing HA 720"
+      }
+    ],
+    "asset": "false",
+    "lot_numbers": "false",
+    "norm": "false",
+    "serial_numbers": "false",
+    "work": "false",
+    "koli_package_amount": "10"
+  },
+  {
+    "count_code": "1442",
+    "code": "P06260011820",
+    "barcode": "4262434064089",
+    "name": "Patrik AEON Front Wing HA 820",
+    "unit": "kos",
+    "service": "false",
+    "sales": "true",
+    "activated": "true",
+    "purchasing": "true",
+    "eshop_sync": "true",
+    "height": 21,
+    "width": 32,
+    "depth": 108,
+    "localization": [
+      {
+        "language": "sl",
+        "name": "Patrik AEON Front Wing HA 820"
+      }
+    ],
+    "asset": "false",
+    "lot_numbers": "false",
+    "norm": "false",
+    "serial_numbers": "false",
+    "work": "false",
+    "koli_package_amount": "10"
+  },
+  {
+    "count_code": "1443",
+    "code": "P06260011920",
+    "barcode": "4262434064096",
+    "name": "Patrik AEON Front Wing HA 920",
+    "unit": "kos",
+    "service": "false",
+    "sales": "true",
+    "activated": "true",
+    "purchasing": "true",
+    "eshop_sync": "true",
+    "height": 21,
+    "width": 32,
+    "depth": 110,
+    "localization": [
+      {
+        "language": "sl",
+        "name": "Patrik AEON Front Wing HA 920"
+      }
+    ],
+    "asset": "false",
+    "lot_numbers": "false",
+    "norm": "false",
+    "serial_numbers": "false",
+    "work": "false",
+    "koli_package_amount": "10"
+  },
+  {
+    "count_code": "1444",
+    "code": "P06260011102",
+    "barcode": "4262434064102",
+    "name": "Patrik AEON Front Wing HA 1020",
+    "unit": "kos",
+    "service": "false",
+    "sales": "true",
+    "activated": "true",
+    "purchasing": "true",
+    "eshop_sync": "true",
+    "height": 21,
+    "width": 32,
+    "depth": 120,
+    "localization": [
+      {
+        "language": "sl",
+        "name": "Patrik AEON Front Wing HA 1020"
+      }
+    ],
+    "asset": "false",
+    "lot_numbers": "false",
+    "norm": "false",
+    "serial_numbers": "false",
+    "work": "false",
+    "koli_package_amount": "10"
+  },
+  {
+    "count_code": "928",
+    "code": "P02230001999",
+    "barcode": "4262431699277",
+    "name": "Patrik Carbon IQ Foil Set",
+    "unit": "kom",
+    "service": "false",
+    "sales": "true",
+    "activated": "true",
+    "purchasing": "true",
+    "eshop_sync": "true",
+    "localization": [
+      {
+        "language": "sl",
+        "name": "Patrik Carbon IQ Foil Set"
+      }
+    ],
+    "asset": "true",
+    "lot_numbers": "false",
+    "norm": "false",
+    "serial_numbers": "false",
+    "work": "false",
+    "categories": [
+      {
+        "category": "iQFOiL CLASS"
+      }
+    ]
+  },
+  {
+    "count_code": "1432",
+    "code": "P06260010590",
+    "barcode": "4262434063983",
+    "name": "Patrik AEON Front Wing MA 590",
+    "unit": "kos",
+    "service": "false",
+    "sales": "true",
+    "activated": "true",
+    "purchasing": "true",
+    "eshop_sync": "true",
+    "height": 21,
+    "width": 32,
+    "depth": 85,
+    "localization": [
+      {
+        "language": "sl",
+        "name": "Patrik AEON Front Wing MA 590"
+      }
+    ],
+    "asset": "false",
+    "lot_numbers": "false",
+    "norm": "false",
+    "serial_numbers": "false",
+    "work": "false",
+    "koli_package_amount": "10"
+  },
+  {
+    "count_code": "1433",
+    "code": "P06260010660",
+    "barcode": "4262434063990",
+    "name": "Patrik AEON Front Wing MA 660",
+    "unit": "kos",
+    "service": "false",
+    "sales": "true",
+    "activated": "true",
+    "purchasing": "true",
+    "eshop_sync": "true",
+    "height": 21,
+    "width": 32,
+    "depth": 97,
+    "localization": [
+      {
+        "language": "sl",
+        "name": "Patrik AEON Front Wing MA 660"
+      }
+    ],
+    "asset": "false",
+    "lot_numbers": "false",
+    "norm": "false",
+    "serial_numbers": "false",
+    "work": "false",
+    "koli_package_amount": "10"
+  },
+  {
+    "count_code": "1434",
+    "code": "P06260010730",
+    "barcode": "4262434064003",
+    "name": "Patrik AEON Front Wing MA 730",
+    "unit": "kos",
+    "service": "false",
+    "sales": "true",
+    "activated": "true",
+    "purchasing": "true",
+    "eshop_sync": "true",
+    "height": 21,
+    "width": 32,
+    "depth": 108,
+    "localization": [
+      {
+        "language": "sl",
+        "name": "Patrik AEON Front Wing MA 730"
+      }
+    ],
+    "asset": "false",
+    "lot_numbers": "false",
+    "norm": "false",
+    "serial_numbers": "false",
+    "work": "false",
+    "koli_package_amount": "10"
+  },
+  {
+    "count_code": "1435",
+    "code": "P06260010800",
+    "barcode": "4262434064010",
+    "name": "Patrik AEON Front Wing MA 800",
+    "unit": "kos",
+    "service": "false",
+    "sales": "true",
+    "activated": "true",
+    "purchasing": "true",
+    "eshop_sync": "true",
+    "height": 21,
+    "width": 32,
+    "depth": 108,
+    "localization": [
+      {
+        "language": "sl",
+        "name": "Patrik AEON Front Wing MA 800"
+      }
+    ],
+    "asset": "false",
+    "lot_numbers": "false",
+    "norm": "false",
+    "serial_numbers": "false",
+    "work": "false",
+    "koli_package_amount": "10"
+  },
+  {
+    "count_code": "1436",
+    "code": "P06260010940",
+    "barcode": "4262434064034",
+    "name": "Patrik AEON Front Wing MA 940",
+    "unit": "kos",
+    "service": "false",
+    "sales": "true",
+    "activated": "true",
+    "purchasing": "true",
+    "eshop_sync": "true",
+    "height": 21,
+    "width": 32,
+    "depth": 120,
+    "localization": [
+      {
+        "language": "sl",
+        "name": "Patrik AEON Front Wing MA 940"
+      }
+    ],
+    "asset": "false",
+    "lot_numbers": "false",
+    "norm": "false",
+    "serial_numbers": "false",
+    "work": "false",
+    "koli_package_amount": "10"
+  },
+  {
+    "count_code": "1437",
+    "code": "P06260010101",
+    "barcode": "4262434064041",
+    "name": "Patrik AEON Front Wing MA 1010",
+    "unit": "kos",
+    "service": "false",
+    "sales": "true",
+    "activated": "true",
+    "purchasing": "true",
+    "eshop_sync": "true",
+    "height": 21,
+    "width": 32,
+    "depth": 120,
+    "localization": [
+      {
+        "language": "sl",
+        "name": "Patrik AEON Front Wing MA 1010"
+      }
+    ],
+    "asset": "false",
+    "lot_numbers": "false",
+    "norm": "false",
+    "serial_numbers": "false",
+    "work": "false",
+    "koli_package_amount": "9"
+  },
+  {
+    "count_code": "1438",
+    "code": "P06260010870",
+    "barcode": "4262434064027",
+    "name": "Patrik AEON Front Wing MA 870",
+    "unit": "kos",
+    "service": "false",
+    "sales": "true",
+    "activated": "true",
+    "purchasing": "true",
+    "eshop_sync": "true",
+    "height": 21,
+    "width": 32,
+    "depth": 110,
+    "localization": [
+      {
+        "language": "sl",
+        "name": "Patrik AEON Front Wing MA 870"
+      }
+    ],
+    "asset": "false",
+    "lot_numbers": "false",
+    "norm": "false",
+    "serial_numbers": "false",
+    "work": "false",
+    "koli_package_amount": "10"
+  },
+  {
+    "count_code": "1439",
+    "code": "P06260011560",
+    "barcode": "4262434064058",
+    "name": "Patrik AEON Front Wing HA 560",
+    "unit": "kos",
+    "service": "false",
+    "sales": "true",
+    "activated": "true",
+    "purchasing": "true",
+    "eshop_sync": "true",
+    "height": 21,
+    "width": 32,
+    "depth": 85,
+    "localization": [
+      {
+        "language": "sl",
+        "name": "Patrik AEON Front Wing HA 560"
+      }
+    ],
+    "asset": "false",
+    "lot_numbers": "false",
+    "norm": "false",
+    "serial_numbers": "false",
+    "work": "false",
+    "koli_package_amount": "10"
+  },
+  {
+    "count_code": "1440",
+    "code": "P06260011640",
+    "barcode": "4262434064065",
+    "name": "Patrik AEON Front Wing HA 640",
+    "unit": "kos",
+    "service": "false",
+    "sales": "true",
+    "activated": "true",
+    "purchasing": "true",
+    "eshop_sync": "true",
+    "height": 21,
+    "width": 32,
+    "depth": 97,
+    "localization": [
+      {
+        "language": "sl",
+        "name": "Patrik AEON Front Wing HA 640"
+      }
+    ],
+    "asset": "false",
+    "lot_numbers": "false",
+    "norm": "false",
+    "serial_numbers": "false",
+    "work": "false",
+    "koli_package_amount": "10"
+  },
+  {
+    "count_code": "1441",
+    "code": "P06260011720",
+    "barcode": "4262434064072",
+    "name": "Patrik AEON Front Wing HA 720",
+    "unit": "kos",
+    "service": "false",
+    "sales": "true",
+    "activated": "true",
+    "purchasing": "true",
+    "eshop_sync": "true",
+    "height": 21,
+    "width": 32,
+    "depth": 108,
+    "localization": [
+      {
+        "language": "sl",
+        "name": "Patrik AEON Front Wing HA 720"
+      }
+    ],
+    "asset": "false",
+    "lot_numbers": "false",
+    "norm": "false",
+    "serial_numbers": "false",
+    "work": "false",
+    "koli_package_amount": "10"
+  },
+  {
+    "count_code": "1442",
+    "code": "P06260011820",
+    "barcode": "4262434064089",
+    "name": "Patrik AEON Front Wing HA 820",
+    "unit": "kos",
+    "service": "false",
+    "sales": "true",
+    "activated": "true",
+    "purchasing": "true",
+    "eshop_sync": "true",
+    "height": 21,
+    "width": 32,
+    "depth": 108,
+    "localization": [
+      {
+        "language": "sl",
+        "name": "Patrik AEON Front Wing HA 820"
+      }
+    ],
+    "asset": "false",
+    "lot_numbers": "false",
+    "norm": "false",
+    "serial_numbers": "false",
+    "work": "false",
+    "koli_package_amount": "10"
+  },
+  {
+    "count_code": "1443",
+    "code": "P06260011920",
+    "barcode": "4262434064096",
+    "name": "Patrik AEON Front Wing HA 920",
+    "unit": "kos",
+    "service": "false",
+    "sales": "true",
+    "activated": "true",
+    "purchasing": "true",
+    "eshop_sync": "true",
+    "height": 21,
+    "width": 32,
+    "depth": 110,
+    "localization": [
+      {
+        "language": "sl",
+        "name": "Patrik AEON Front Wing HA 920"
+      }
+    ],
+    "asset": "false",
+    "lot_numbers": "false",
+    "norm": "false",
+    "serial_numbers": "false",
+    "work": "false",
+    "koli_package_amount": "10"
+  },
+  {
+    "count_code": "1444",
+    "code": "P06260011102",
+    "barcode": "4262434064102",
+    "name": "Patrik AEON Front Wing HA 1020",
+    "unit": "kos",
+    "service": "false",
+    "sales": "true",
+    "activated": "true",
+    "purchasing": "true",
+    "eshop_sync": "true",
+    "height": 21,
+    "width": 32,
+    "depth": 120,
+    "localization": [
+      {
+        "language": "sl",
+        "name": "Patrik AEON Front Wing HA 1020"
+      }
+    ],
+    "asset": "false",
+    "lot_numbers": "false",
+    "norm": "false",
+    "serial_numbers": "false",
+    "work": "false",
+    "koli_package_amount": "10"
+  }
+]

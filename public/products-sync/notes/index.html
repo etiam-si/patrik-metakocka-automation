@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patrik Product Sync Notes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: #121216;
+      color: #eee;
+      font-family: 'Orbitron', sans-serif;
+      padding: 2rem;
+      line-height: 1.6;
+    }
+
+    .logo-container {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .logo-container img {
+      width: 120px;
+      height: auto;
+      margin-bottom: 0.5rem;
+    }
+
+    h1, h2, h3 {
+      color: #00d4ff;
+      margin-bottom: 0.5rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    h3 {
+      font-size: 1.2rem;
+      margin-top: 1rem;
+    }
+
+    p {
+      margin-bottom: 1rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1rem;
+      background: rgba(30, 30, 35, 0.85);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 0.75rem 1rem;
+      color: #ccc;
+      text-align: left;
+    }
+
+    th {
+      background: rgba(0, 212, 255, 0.15);
+      font-weight: 700;
+    }
+
+    tr:nth-child(even) {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    footer {
+      margin-top: 3rem;
+      font-size: 0.85rem;
+      color: #777;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="logo-container">
+    <a href="/">
+      <img
+        src="https://imgs.pnvnet.si/img/615/301/75/2/c/www.patrikinternational.com/assets/page_info/0308183001671536508.png"
+        alt="Time 4 Action Logo">
+    </a>
+  </div>
+
+  <h2>Overview</h2>
+  <p>
+    This page documents the functionality of the Patrik Product Sync, which synchronizes products from Time 4 Action
+    warehouse to the Creaglobe system (Metakocka). It is designed to automate stock updates, scheduling, and log tracking.
+  </p>
+
+  <h2>Key Features</h2>
+  <ul>
+    <li>Automated sync at configurable intervals (15 min, hourly, 3 hours, daily).</li>
+    <li>Selective syncing based on day of the week.</li>
+    <li>Real-time logs of sync operations with timestamp and stock link.</li>
+  </ul>
+
+  <h2>Cron Expressions</h2>
+  <p>Supported intervals:</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Interval</th>
+        <th>Cron Example</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Every 15 minutes</td>
+        <td>0-59/15 * * * 1,2,3</td>
+        <td>Syncs every 15 minutes on Mon, Tue, Wed</td>
+      </tr>
+      <tr>
+        <td>Hourly</td>
+        <td>0 2-23/1 * * *</td>
+        <td>Syncs every hour starting 2 AM</td>
+      </tr>
+      <tr>
+        <td>Every 3 hours</td>
+        <td>0 2-23/3 * * *</td>
+        <td>Syncs every 3 hours starting 2 AM</td>
+      </tr>
+      <tr>
+        <td>Daily</td>
+        <td>0 2 * * *</td>
+        <td>Syncs once daily at 2 AM</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Logs</h2>
+  <p>The system keeps track of the latest sync runs, including timestamp, sync name, and a link to the stock list.</p>
+
+  <footer>© 2025 Time 4 Action - DOCUMENTATION</footer>
+</body>
+
+</html>
