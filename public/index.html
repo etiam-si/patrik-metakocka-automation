@@ -28,7 +28,8 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      overflow: hidden;
+      overflow-x: hidden;
+      padding-bottom: 5rem;
     }
 
     .logo-container {
@@ -71,6 +72,8 @@
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
       transition: all 0.3s ease;
       cursor: pointer;
+      text-decoration: none;
+      color: inherit;
     }
 
     .card:hover {
@@ -88,6 +91,49 @@
       font-size: 1.1rem;
       font-weight: 500;
       color: #ccc;
+      text-align: center;
+    }
+
+    /* Notes rectangle links */
+    .notes-links {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 3rem;
+      width: 90%;
+      max-width: 600px;
+      align-items: center;
+    }
+
+    .notes-links a {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border-radius: 12px;
+      background: rgba(40, 40, 45, 0.7);
+      backdrop-filter: blur(6px);
+      text-decoration: none;
+      color: #ccc;
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+    }
+
+    .notes-links a:hover {
+      transform: scale(1.02);
+      box-shadow: 0 8px 20px rgba(0, 255, 255, 0.3);
+    }
+
+    .notes-links i {
+      font-size: 2rem;
+      color: #00d4ff;
+      margin-right: 1rem;
+      flex-shrink: 0;
+    }
+
+    .notes-links span {
+      font-size: 1.1rem;
+      font-weight: 500;
     }
 
     footer {
@@ -95,11 +141,8 @@
       bottom: 1rem;
       font-size: 0.9rem;
       color: #555;
-    }
-
-    .cards a.card {
-      text-decoration: none;
-      color: inherit;
+      text-align: center;
+      width: 100%;
     }
   </style>
 </head>
@@ -107,17 +150,11 @@
 <body>
 
   <div class="logo-container">
-    <img
-      src="https://imgs.pnvnet.si/img/615/301/75/2/c/www.patrikinternational.com/assets/page_info/0308183001671536508.png"
-      alt="Time 4 Action Logo">
+    <img src="https://imgs.pnvnet.si/img/615/301/75/2/c/www.patrikinternational.com/assets/page_info/0308183001671536508.png" alt="Time 4 Action Logo">
     <h1>Time 4 Action - Automation</h1>
   </div>
 
   <section class="cards">
-    <!-- <a href="/dashboard" class="card">
-      <i class="fas fa-tachometer-alt"></i>
-      <span>Dashboard</span>
-    </a> -->
     <a href="/warehouse-sync" class="card">
       <i class="fa-solid fa-warehouse"></i>
       <span>Warehouse Sync</span>
@@ -126,16 +163,18 @@
       <i class="fa-solid fa-box-open"></i>
       <span>Products Sync</span>
     </a>
-    <!-- <a href="/logs" class="card">
-      <i class="fas fa-file-alt"></i>
-      <span>Logs</span>
-    </a>
-    <a href="/settings" class="card">
-      <i class="fas fa-cogs"></i>
-      <span>Settings</span>
-    </a> -->
   </section>
 
+  <section class="notes-links">
+    <a href="/products-sync/notes">
+      <i class="fa-solid fa-sticky-note"></i>
+      <span>Products Notes</span>
+    </a>
+    <a href="/warehouse-sync/notes">
+      <i class="fa-solid fa-sticky-note"></i>
+      <span>Warehouse Notes</span>
+    </a>
+  </section>
 
   <footer>© 2025 Time 4 Action - AUTOMATION</footer>
 

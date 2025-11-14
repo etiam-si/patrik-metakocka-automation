@@ -2,147 +2,226 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Patrik Product Sync Notes</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    body {
-      background: #121216;
-      color: #eee;
-      font-family: 'Orbitron', sans-serif;
-      padding: 2rem;
-      line-height: 1.6;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patrik Product Sync Notes</title>
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Orbitron:wght@400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            background: #121216;
+            color: #eee;
+            font-family: 'Montserrat', sans-serif !important;
+            padding: 2rem;
+            line-height: 1.6;
+        }
 
-    .logo-container {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
+        .logo-container {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
 
-    .logo-container img {
-      width: 120px;
-      height: auto;
-      margin-bottom: 0.5rem;
-    }
+        .logo-container img {
+            width: 120px;
+            height: auto;
+            margin-bottom: 0.5rem;
+        }
 
-    h1, h2, h3 {
-      color: #00d4ff;
-      margin-bottom: 0.5rem;
-    }
+        h1, h2, h3 {
+            font-family: 'Orbitron', sans-serif;
+            color: #00d4ff;
+            margin-bottom: 0.5rem;
+        }
 
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-    }
+        h1 { font-size: 2rem; margin-bottom: 1rem; }
+        h2 { font-size: 1.5rem; margin-top: 1.5rem; }
+        h3 { font-size: 1.2rem; margin-top: 1rem; }
 
-    h2 {
-      font-size: 1.5rem;
-      margin-top: 1.5rem;
-    }
+        p { margin-bottom: 1rem; }
 
-    h3 {
-      font-size: 1.2rem;
-      margin-top: 1rem;
-    }
+        ul { margin-bottom: 1rem; padding-left: 1.2rem; }
 
-    p {
-      margin-bottom: 1rem;
-    }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+            background: rgba(30, 30, 35, 0.85);
+            border-radius: 12px;
+            overflow: hidden;
+        }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 1rem;
-      background: rgba(30, 30, 35, 0.85);
-      border-radius: 12px;
-      overflow: hidden;
-    }
+        th, td {
+            padding: 0.75rem 1rem;
+            color: #ccc;
+            text-align: left;
+        }
 
-    th, td {
-      padding: 0.75rem 1rem;
-      color: #ccc;
-      text-align: left;
-    }
+        th { background: rgba(0, 212, 255, 0.15); font-weight: 700; }
 
-    th {
-      background: rgba(0, 212, 255, 0.15);
-      font-weight: 700;
-    }
+        tr:nth-child(even) { background: rgba(255, 255, 255, 0.05); }
 
-    tr:nth-child(even) {
-      background: rgba(255, 255, 255, 0.05);
-    }
+        /* Important red highlight */
+        .important-note {
+            background-color: #330000;
+            border-left: 5px solid #ff0000;
+            padding: 1rem;
+            margin: 1rem 0;
+            color: #ff4d4d;
+            font-weight: 600;
+        }
 
-    footer {
-      margin-top: 3rem;
-      font-size: 0.85rem;
-      color: #777;
-      text-align: center;
-    }
-  </style>
+        /* Warning orange highlight */
+        .warning-note {
+            background-color: #331a00;      /* dark orange/brown background */
+            border-left: 5px solid #ff9500; /* bright orange accent */
+            padding: 1rem;
+            margin: 1rem 0;
+            color: #ffb84d;                  /* bright orange text */
+            font-weight: 600;
+            border-radius: 5px;              /* subtle rounding */
+        }
+
+
+        footer {
+            margin-top: 3rem;
+            font-size: 0.85rem;
+            color: #777;
+            text-align: center;
+        }
+
+        pre {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            color: #00ffcc;
+        }
+    </style>
 </head>
 
 <body>
-  <div class="logo-container">
-    <a href="/">
-      <img
-        src="https://imgs.pnvnet.si/img/615/301/75/2/c/www.patrikinternational.com/assets/page_info/0308183001671536508.png"
-        alt="Time 4 Action Logo">
-    </a>
-  </div>
+    <div class="logo-container">
+        <a href="/">
+            <img src="https://imgs.pnvnet.si/img/615/301/75/2/c/www.patrikinternational.com/assets/page_info/0308183001671536508.png"
+                alt="Time 4 Action Logo">
+        </a>
+    </div>
 
-  <h2>Overview</h2>
-  <p>
-    This page documents the functionality of the Patrik Product Sync, which synchronizes products from Time 4 Action
-    warehouse to the Creaglobe system (Metakocka). It is designed to automate stock updates, scheduling, and log tracking.
-  </p>
+    <h2>Overview</h2>
+    <p>
+        Patrik Product Sync automates the synchronization of product data between the Time 4 Action warehouse and the
+        Creaglobe system (Metakocka). It ensures stock levels, product attributes, and categories stay consistent across
+        systems while generating logs for tracking.
+    </p>
+    <div class="important-note">
+        ⚠ <strong>Important:</strong> Products that are compound sets are currently <strong>not supported</strong> in the sync. Any
+        compound components or sets will <strong>not be synced</strong>. Manual handling is required for these products to
+        maintain data consistency.
+    </div>
 
-  <h2>Key Features</h2>
-  <ul>
-    <li>Automated sync at configurable intervals (15 min, hourly, 3 hours, daily).</li>
-    <li>Selective syncing based on day of the week.</li>
-    <li>Real-time logs of sync operations with timestamp and stock link.</li>
-  </ul>
+    <h2>Key Features</h2>
+    <ul>
+        <li>Automatic synchronization at configurable intervals (15 min, hourly, every 3 hours, daily).</li>
+        <li>Selective syncing based on day of the week.</li>
+        <li>Deep comparison of product attributes to avoid overwriting unchanged fields.</li>
+        <li>Tracks products added only in one system and generates delta files for updates.</li>
+    </ul>
 
-  <h2>Cron Expressions</h2>
-  <p>Supported intervals:</p>
-  <table>
-    <thead>
-      <tr>
-        <th>Interval</th>
-        <th>Cron Example</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Every 15 minutes</td>
-        <td>0-59/15 * * * 1,2,3</td>
-        <td>Syncs every 15 minutes on Mon, Tue, Wed</td>
-      </tr>
-      <tr>
-        <td>Hourly</td>
-        <td>0 2-23/1 * * *</td>
-        <td>Syncs every hour starting 2 AM</td>
-      </tr>
-      <tr>
-        <td>Every 3 hours</td>
-        <td>0 2-23/3 * * *</td>
-        <td>Syncs every 3 hours starting 2 AM</td>
-      </tr>
-      <tr>
-        <td>Daily</td>
-        <td>0 2 * * *</td>
-        <td>Syncs once daily at 2 AM</td>
-      </tr>
-    </tbody>
-  </table>
+    <h2>Important Notes on Immutable Fields</h2>
+    <p>Some fields cannot be updated automatically because they are linked to invoices, stock calculations, or compound
+        products. Changing them without updating all related documents could break data integrity. These fields are:</p>
+    <ul>
+        <li><strong>service</strong> – Indicates whether the product is a service. Changing it affects linked invoices.</li>
+        <li><strong>purchase</strong> – Purchase information used for procurement and costing.</li>
+        <li><strong>compounds</strong> – Lists of compound products; altering them affects all recipes or assembly
+            documents.</li>
+    </ul>
+    <p>Whenever updates to these fields are necessary, manual review and batch updates are recommended to prevent
+        inconsistencies.</p>
+    <div class="warning-note">
+        ⚠ <strong>API Restrictions:</strong> The <strong>service</strong> and <strong>purchasing</strong> fields cannot be updated via API calls. Any attempt to change them programmatically will be ignored. Manual updates are required to maintain data integrity.
+    </div>
 
-  <h2>Logs</h2>
-  <p>The system keeps track of the latest sync runs, including timestamp, sync name, and a link to the stock list.</p>
+    <h2>Supported Product Fields</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Field</th>
+                <th>Included in Sync</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>count_code</td><td>✔️</td></tr>
+            <tr><td>mk_id</td><td>❌</td></tr>
+            <tr><td>code</td><td>✔️</td></tr>
+            <tr><td>barcode</td><td>✔️</td></tr>
+            <tr><td>name</td><td>✔️</td></tr>
+            <tr><td>unit</td><td>✔️</td></tr>
+            <tr><td>service</td><td>✔️ (read-only)</td></tr>
+            <tr><td>sales</td><td>✔️</td></tr>
+            <tr><td>activated</td><td>✔️</td></tr>
+            <tr><td>purchasing</td><td>✔️ (read-only)</td></tr>
+            <tr><td>eshop_sync</td><td>✔️</td></tr>
+            <tr><td>amount</td><td>❌</td></tr>
+            <tr><td>localization</td><td>✔️</td></tr>
+            <tr><td>asset</td><td>✔️</td></tr>
+            <tr><td>compound</td><td>❌ ⚠ Not synced</td></tr>
+            <tr><td>expiration_dates</td><td>✔️</td></tr>
+            <tr><td>lot_numbers</td><td>✔️</td></tr>
+            <tr><td>norm</td><td>✔️</td></tr>
+            <tr><td>serial_numbers</td><td>✔️</td></tr>
+            <tr><td>work</td><td>✔️</td></tr>
+            <tr><td>category_tree_list</td><td>✔️</td></tr>
+            <tr><td>free_amount</td><td>❌</td></tr>
+            <tr><td>pricelist</td><td>❌</td></tr>
+            <tr><td>name_desc</td><td>✔️</td></tr>
+            <tr><td>amount_detail</td><td>❌</td></tr>
+            <tr><td>height</td><td>✔️</td></tr>
+            <tr><td>width</td><td>✔️</td></tr>
+            <tr><td>depth</td><td>✔️</td></tr>
+            <tr><td>weight</td><td>✔️</td></tr>
+            <tr><td>koli_package_amount</td><td>✔️</td></tr>
+            <tr><td>gross_weight</td><td>✔️</td></tr>
+            <tr><td>reservation_detail</td><td>❌</td></tr>
+            <tr><td>customs_fee</td><td>✔️</td></tr>
+            <tr><td>country</td><td>✔️</td></tr>
+            <tr><td>compound_type</td><td>❌</td></tr>
+            <tr><td>compounds</td><td>❌ ⚠ Not synced</td></tr>
+        </tbody>
+    </table>
 
-  <footer>© 2025 Time 4 Action - DOCUMENTATION</footer>
+    <h2>Compound Products</h2>
+    <p>Compound products are items made of multiple components. They require special handling because:</p>
+    <ul>
+        <li>They may already be used in invoices or production documents.</li>
+        <li>Changing a compound requires recalculating stock for all linked products.</li>
+    </ul>
+
+    <h2>API Update Example</h2>
+    <pre>
+{
+  "secret_key":"YOUR_SECRET_KEY",
+  "company_id":"16",
+  "count_code":"eshop_001",
+  "code":"eshop_001_sif",
+  "barcode": "987654321",
+  "name":"artikel eshop_001",
+  "name_desc": "artikel eshop_001 - description",
+  "unit":"kos",
+  "service":"false",
+  "sales":"true",
+  "activated":"true",
+  "purchasing":"false",
+  "height":"12.23",
+  "depth":"4.12",
+  "weight":"6.3",
+  "categories":[{"category":"Sadje"},{"category":["Sadje","Hruška"]}]
+}
+  </pre>
+
+    <footer>© 2025 Time 4 Action - DOCUMENTATION</footer>
 </body>
 
 </html>
