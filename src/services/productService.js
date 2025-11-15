@@ -1,17 +1,24 @@
 // Load environment variables first
 const dotenv = require("dotenv");
 const axios = require("axios");
+const path = require("path")
 const fs = require("fs");
 
 // Local modules
 const config = require("../../config/config.json");
+const {sendSyncReport} = require("./emailSender")
 
 // Load .env: use ENV_FILE_PATH if set, otherwise fallback to local .env
 const envFilePath = process.env.ENV_FILE_PATH || "../../.env";
 dotenv.config({ path: envFilePath });
 
-const creaglobe_product_list = require("../../db/products/cr_product_list").product_list;
-const t4a_product_list = require("../../db/products/t4a_product_list.json").product_list;
+// --- Helpers ---
+function parseNumber(value) {
+    if (typeof value === 'string') {
+        return Number(value.replace(',', '.'));
+    }
+    return value; // already number
+}
 
 // Flatten categories helper
 function flattenCategories(categoryTree) {
@@ -54,11 +61,11 @@ function formatProductList(list) {
                 width: parseNumber(p.width),
                 depth: parseNumber(p.depth),
                 weight: parseNumber(p.weight),
-                localization: p.localization,
+                // localization: p.localization,
                 asset: p.asset,
-                lot_numbers: p.lot_numbers,
+                // lot_numbers: p.lot_numbers,
                 norm: p.norm,
-                serial_numbers: p.serial_numbers,
+                // serial_numbers: p.serial_numbers,
                 work: p.work,
                 categories: flattenCategories(p.category_tree_list),
                 name_desc: p.name_desc,
@@ -71,25 +78,29 @@ function formatProductList(list) {
     );
 }
 
-// Deep diff for nested objects
-function deepDiff(a, b) {
-    const changes = {};
+function deepEqualIgnoreCaseUnordered(a, b) {
+  if (typeof a === 'string' && typeof b === 'string') {
+    return a.toLowerCase() === b.toLowerCase();
+  }
 
-    for (const key of new Set([...Object.keys(a || {}), ...Object.keys(b || {})])) {
-        const aValue = a[key];
-        const bValue = b[key];
+  if (Array.isArray(a) && Array.isArray(b)) {
+    if (a.length !== b.length) return false;
+    
+    // For each element in a, there must be a match in b
+    return a.every(elA => b.some(elB => deepEqualIgnoreCaseUnordered(elA, elB)));
+  }
 
-        if (typeof aValue === "object" && aValue !== null && typeof bValue === "object" && bValue !== null) {
-            const nested = deepDiff(aValue, bValue);
-            if (Object.keys(nested).length > 0) changes[key] = nested;
-        } else if (aValue !== bValue) {
-            changes[key] = aValue;
-        }
-    }
+  if (typeof a === 'object' && a !== null && typeof b === 'object' && b !== null) {
+    const aKeys = Object.keys(a);
+    const bKeys = Object.keys(b);
+    if (aKeys.length !== bKeys.length) return false;
+    return aKeys.every(k => deepEqualIgnoreCaseUnordered(a[k], b[k]));
+  }
 
-    return changes;
+  return a === b;
 }
 
+// systemA is one that is treated as main --> it wins always
 function generateSmartMerge(systemA, systemB, outputDir = './delta') {
     if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
 
@@ -114,13 +125,19 @@ function generateSmartMerge(systemA, systemB, outputDir = './delta') {
         const aUpdate = {};
 
         for (const key of new Set([...Object.keys(aProduct), ...Object.keys(bProduct)])) {
+            if (key === 'count_code' || key === "sales" || key ==="service" || key === "purchasing" || key === "code") continue;
+            
             const aValue = aProduct[key];
             const bValue = bProduct[key];
 
             const areObjects = typeof aValue === 'object' && aValue !== null &&
                 typeof bValue === 'object' && bValue !== null;
+            
+            const equal = deepEqualIgnoreCaseUnordered(aValue, bValue);
 
-            const equal = areObjects ? JSON.stringify(aValue) === JSON.stringify(bValue) : aValue === bValue;
+            if (key === "categories" && !equal) {
+                console.log(aValue, bValue, equal)
+            }
 
             if (!equal) {
                 if (aValue !== undefined && bValue !== undefined) {
@@ -134,31 +151,43 @@ function generateSmartMerge(systemA, systemB, outputDir = './delta') {
         }
 
         // Push updates keeping original system count_code & service
-        changesB.push({
-            ...bUpdate,
-            count_code: bProduct.count_code,
-            service: bProduct.service,
-            purchase: bProduct.purchase,
-            code: bProduct.code
-        });
+        if (bUpdate && Object.keys(bUpdate).length > 0) {
+            changesB.push({
+                ...bUpdate,
+                count_code: bProduct.count_code,
+                sales: aProduct.sales,
+                service: bProduct.service,
+                purchasing: bProduct.purchasing,
+                code: bProduct.code
+            });
+        }
 
-        changesA.push({
-            ...aUpdate,
-            count_code: aProduct.count_code,
-            service: aProduct.service,
-            purchase: bProduct.purchase,
-            code: aProduct.code
-        });
+        if (aUpdate && Object.keys(aUpdate).length > 0) {
+            changesA.push({
+                ...aUpdate,
+                count_code: aProduct.count_code,
+                sales: aProduct.sales,
+                service: aProduct.service,
+                purchasing: bProduct.purchasing, // double-check if this should be aProduct.purchase
+                code: aProduct.code
+            });
+        }
     }
 
     // Products only in B → add to A
     for (const bProduct of systemB) {
-        if (!mapA[bProduct.code]) newInA.push({ ...bProduct });
+        if (!mapA[bProduct.code]) {
+            const { count_code, ...rest } = bProduct;
+            newInA.push({ ...rest });
+        }
     }
 
     // Products only in A → add to B
     for (const aProduct of systemA) {
-        if (!mapB[aProduct.code]) newInB.push({ ...aProduct });
+        if (!mapB[aProduct.code]) {
+            const { count_code, ...rest } = aProduct;
+            newInB.push({ ...rest });
+        }
     }
 
     fs.writeFileSync(`${outputDir}/changesA.json`, JSON.stringify(changesA, null, 2));
@@ -171,24 +200,94 @@ function generateSmartMerge(systemA, systemB, outputDir = './delta') {
     return { changesA, changesB, newInA, newInB };
 }
 
-
-
-// === TEST ===
-const creaglobeFormatted = formatProductList(creaglobe_product_list);
-const t4aFormatted = formatProductList(t4a_product_list); // simulate identical data
-
-// console.log(creaglobeFormatted)
-
-var smartMerge = generateSmartMerge(creaglobeFormatted, t4aFormatted);
-
+// Update products in Metakocka
 async function updateProducts(updates, secret_key, company_id) {
+    const url = `${config.metakocka.baseUrl}${config.metakocka.productUpdatePath}`;
+    const error_codes = [];
+
     for (const update of updates) {
-        const productUpdateResponse = await axios.post(
-            `${config.metakocka.baseUrl}${config.metakocka.productUpdatePath}`,
+        try {
+            const res = await axios.post(
+                url,
+                {
+                    secret_key,
+                    company_id,
+                    ...update
+                },
+                {
+                    headers: { "Content-Type": "application/json" }
+                }
+            );
+
+            if (res.data.opr_code !== "0") {
+                error_codes.push({
+                    opr_desc_app: res.data.opr_desc_app,
+                    opr_desc: res.data.opr_desc
+                });
+            }
+        } catch (err) {
+            error_codes.push({
+                update,
+                error: err.response?.data || err.message
+            });
+        }
+    }
+
+    return error_codes;
+}
+
+async function addProducts(products, secret_key, company_id) {
+    const url = `${config.metakocka.baseUrl}${config.metakocka.productAddPath}`;
+    const error_codes = [];
+
+    for (const product of products) {
+        try {
+            const res = await axios.post(
+                url,
+                {
+                    secret_key,
+                    company_id,
+                    ...product
+                },
+                {
+                    headers: { "Content-Type": "application/json" }
+                }
+            );
+
+            if (res.data.opr_code !== "0") {
+                error_codes.push({
+                    opr_desc_app: res.data.opr_desc_app,
+                    opr_desc: res.data.opr_desc
+                });
+            }
+        } catch (err) {
+            error_codes.push({
+                product,
+                error: err.response?.data || err.message
+            });
+        }
+    }
+
+    return error_codes;
+}
+
+async function listProducts(secret_key, company_id) {
+    var productList = [];
+    var offset = 0;
+    var loop = true;
+    const baseRequestData = {
+        secret_key: secret_key,
+        company_id: company_id,
+        return_category: true,
+        limit: 1000
+    }
+
+    while (loop) {
+        const productListResponse = await axios.post(
+            `${config.metakocka.baseUrl}${config.metakocka.productListPath}`,
             {
-                "secret_key": secret_key,
-                "company_id": company_id,
-                ...update
+                ...baseRequestData,
+                offset: offset
             },
             {
                 headers: {
@@ -196,35 +295,79 @@ async function updateProducts(updates, secret_key, company_id) {
                 }
             }
         );
-        if (productUpdateResponse.data.opr_code == "0") {
-            // console.log("OK")
-        } else {
-            console.log(productUpdateResponse.data)
-        }
-        // console.log(productUpdateResponse.data)
-        // console.dir(
-        //     {
-        //         "secret_key": secret_key,
-        //         "company_id": company_id,
-        //         ...update
-        //     },
-        // {depth: null})
-        // return 0;
-        // console.log(`${config.metakocka.baseUrl}${config.metakocka.productUpdatePath}`)
-        // return 0;
 
+        productList.push(...productListResponse.data.product_list)
+        
+        offset += 1000;
+
+        if (productListResponse.data.product_list_count < 1000) {
+            loop = false;
+        }
     }
+    return productList
+
 }
+
+async function syncProducts(systemAKey, systemACompany, systemBKey, systemBCompany) {
+    const companyNames = {
+        4430: "Creaglobe",
+        6267: "Time 4 Action"
+    }
+
+    const productsA = await listProducts(systemAKey, systemACompany);
+    const productsB = await listProducts(systemBKey, systemBCompany);
+
+    const productsAFormated = formatProductList(productsA);
+    const productsBFormated = formatProductList(productsB);
+
+    const smartMerge = generateSmartMerge(productsAFormated, productsBFormated);
+
+    const changesA = smartMerge.changesA;
+    const changesB = smartMerge.changesB;
+    const newInA = smartMerge.newInA;
+    const newInB = smartMerge.newInB;
+
+    const updateAErrorCodes = await updateProducts(changesA, systemAKey, systemACompany);
+    const updateBErrorCodes = await updateProducts(changesB, systemBKey, systemBCompany);
+
+    const addProductsAErrorCodes = await addProducts(newInA, systemAKey, systemACompany);
+    const addProductsBErrorCodes = await addProducts(newInB, systemBKey, systemBCompany);
+
+    // Correct email mapping: from → to based on data flow
+    const emailTasks = [
+        { errors: updateAErrorCodes, from: systemACompany, to: systemBCompany, notes: ['Product updates attempt'] },
+        { errors: updateBErrorCodes, from: systemBCompany, to: systemACompany, notes: ['Product updates attempt'] },
+        { errors: addProductsAErrorCodes, from: systemACompany, to: systemBCompany, notes: ['Adding new products'] },
+        { errors: addProductsBErrorCodes, from: systemBCompany, to: systemACompany, notes: ['Adding new products'] },
+    ];
+
+    for (const task of emailTasks) {
+        if (task.errors && task.errors.length > 0) {
+            await sendSyncReport({
+                toEmail: 'k2.gregar@gmail.com',
+                fromSystem: companyNames[task.from],
+                toSystem: companyNames[task.to],
+                errors: task.errors,
+                successes: [],
+                notes: task.notes
+            });
+        }
+    }
+
+    console.log('All relevant error emails sent.');
+}
+
+// === TEST ===
+// const creaglobeFormatted = formatProductList(creaglobe_product_list);
+// const t4aFormatted = formatProductList(t4a_product_list); // simulate identical data
+
+
+// var smartMerge = generateSmartMerge(creaglobeFormatted, t4aFormatted);
+
+syncProducts(process.env.MK_SECRET_KEY_CREAGLOBE, process.env.MK_COMPANY_ID_CREAGLOBE, process.env.MK_SECRET_KEY_T4A, process.env.MK_COMPANY_ID_T4A)
+
+
 
 // updateProducts(smartMerge.changesA, process.env.MK_SECRET_KEY_CREAGLOBE, process.env.MK_COMPANY_ID_CREAGLOBE)
-// smartMerge.changesB[0].name_desc = "Grega Rotar";
-// delete smartMerge.changesB[0].code
-updateProducts(smartMerge.changesB, process.env.MK_SECRET_KEY_T4A, process.env.MK_COMPANY_ID_T4A)
+// updateProducts(smartMerge.changesB, process.env.MK_SECRET_KEY_T4A, process.env.MK_COMPANY_ID_T4A)
 
-
-function parseNumber(value) {
-    if (typeof value === 'string') {
-        return Number(value.replace(',', '.'));
-    }
-    return value; // already number
-}
